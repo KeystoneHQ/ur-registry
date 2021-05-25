@@ -21,8 +21,8 @@ export class MultiKey extends RegistryItem {
   }
 
   getThreshold = () => this.threshold;
-  getEcKeys = () => this.ecKeys;
-  getHdKeys = () => this.hdKeys;
+  getEcKeys = () => this.ecKeys as CryptoECKey[];
+  getHdKeys = () => this.hdKeys as CryptoHDKey[];
 
   toDataItem = () => {
     const map = {};

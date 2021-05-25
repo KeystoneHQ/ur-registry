@@ -15,12 +15,12 @@ export class CryptoECKey extends RegistryItem {
   constructor(args: { data: Buffer; curve?: number; privateKey?: boolean }) {
     super();
     this.data = args.data;
-    this.curve = args.curve || 0;
-    this.privateKey = args.privateKey || false;
+    this.curve = args.curve;
+    this.privateKey = args.privateKey;
   }
 
-  public getCurve = () => this.curve;
-  public isPrivateKey = () => this.privateKey;
+  public getCurve = () => this.curve || 0;
+  public isPrivateKey = () => this.privateKey || false;
   public getData = () => this.data;
 
   getRegistryType = () => {
@@ -32,7 +32,7 @@ export class CryptoECKey extends RegistryItem {
     if (this.curve) {
       map[Keys.curve] = this.curve;
     }
-    if (this.isPrivateKey !== undefined) {
+    if (this.privateKey !== undefined) {
       map[Keys.private] = this.privateKey;
     }
     map[Keys.data] = this.data;

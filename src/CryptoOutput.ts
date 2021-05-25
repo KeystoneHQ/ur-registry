@@ -22,11 +22,26 @@ export class CryptoOutput extends RegistryItem {
   public getHDKey = () => {
     if (this.cryptoKey instanceof CryptoHDKey) {
       return this.cryptoKey as CryptoHDKey;
-    } else
-      throw new Error(
-        `#[ur-registry][CryptoOutput][fn.getHDKey]: cryptoKey is not an instance of [CryptoHDKey]!`,
-      );
+    } else {
+      return undefined;
+    }
   };
+  public getECKey = () => {
+    if (this.cryptoKey instanceof CryptoECKey) {
+      return this.cryptoKey as CryptoECKey;
+    } else {
+      return undefined;
+    }
+  };
+
+  public getMultiKey = () => {
+    if (this.cryptoKey instanceof MultiKey) {
+      return this.cryptoKey as MultiKey;
+    } else {
+      return undefined;
+    }
+  };
+
   public getScriptExpressions = () => this.scriptExpressions;
 
   toDataItem = () => {
@@ -54,23 +69,29 @@ export class CryptoOutput extends RegistryItem {
     let _dataItem = dataItem;
     let _tag = _dataItem.getTag() || undefined;
     do {
-      if (_tag !== RegistryTypes.CRYPTO_HDKEY.getTag()) {
+      if (
+        _tag !== RegistryTypes.CRYPTO_HDKEY.getTag() &&
+        _tag !== RegistryTypes.CRYPTO_ECKEY.getTag()
+      ) {
         scriptExpressions.push(ScriptExpression.fromTag(_tag));
-        _dataItem = _dataItem.getData();
-        _tag = _dataItem.getTag();
+        if (_dataItem.getData() instanceof DataItem) {
+          _dataItem = _dataItem.getData();
+          _tag = _dataItem.getTag();
+        } else {
+          _tag = undefined;
+        }
       } else {
         _tag = undefined;
       }
     } while (_tag !== undefined);
-
+    const seLength = scriptExpressions.length;
     const isMultiKey =
-      scriptExpressions.length > 0 &&
-      (scriptExpressions[0].getExpression() ===
+      seLength > 0 &&
+      (scriptExpressions[seLength - 1].getExpression() ===
         ScriptExpressions.MULTISIG.getExpression() ||
-        scriptExpressions[0].getExpression() ===
+        scriptExpressions[seLength - 1].getExpression() ===
           ScriptExpressions.SORTED_MULTISIG.getExpression());
     //TODO: judge is multi key by scriptExpressions
-
     if (isMultiKey) {
       const multiKey = MultiKey.fromDataItem(_dataItem);
       return new CryptoOutput(scriptExpressions, multiKey);

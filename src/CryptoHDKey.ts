@@ -50,7 +50,7 @@ export class CryptoHDKey extends RegistryItem {
   public getKey = () => this.key;
   public getChainCode = () => this.chainCode;
   public isMaster = () => this.master;
-  public isPrivateKey = () => this.privateKey;
+  public isPrivateKey = () => !!this.privateKey;
   public getUseInfo = () => this.useInfo;
   public getOrigin = () => this.origin;
   public getChildren = () => this.children;
@@ -79,7 +79,7 @@ export class CryptoHDKey extends RegistryItem {
 
   private setupDeriveKey = (args: DeriveKeyProps) => {
     this.master = false;
-    this.privateKey = !!args.isPrivateKey;
+    this.privateKey = args.isPrivateKey;
     this.key = args.key;
     this.chainCode = args.chainCode;
     this.useInfo = args.useInfo;
@@ -129,7 +129,6 @@ export class CryptoHDKey extends RegistryItem {
         map[Keys.note] = this.note;
       }
     }
-
     return new DataItem(map);
   };
 
