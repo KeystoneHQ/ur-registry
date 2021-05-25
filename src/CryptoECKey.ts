@@ -1,6 +1,6 @@
 import { DataItem } from './DataItem';
 import { RegistryItem } from './RegistryItem';
-import { RegistryType, RegistryTypes } from './RegistryType';
+import { RegistryTypes } from './RegistryType';
 
 enum Keys {
   curve = 1,

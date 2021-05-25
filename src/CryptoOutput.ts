@@ -1,8 +1,10 @@
+import { CryptoECKey } from './CryptoECKey';
 import { CryptoHDKey } from './CryptoHDKey';
 import { DataItem } from './DataItem';
+import { MultiKey } from './MultiKey';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
-import { ScriptExpression } from './ScriptExpression';
+import { ScriptExpression, ScriptExpressions } from './ScriptExpression';
 
 export class CryptoOutput extends RegistryItem {
   public getRegistryType = () => {
@@ -11,7 +13,7 @@ export class CryptoOutput extends RegistryItem {
 
   constructor(
     private scriptExpressions: ScriptExpression[],
-    private cryptoKey: CryptoHDKey,
+    private cryptoKey: CryptoHDKey | CryptoECKey | MultiKey,
   ) {
     super();
   }
@@ -29,7 +31,12 @@ export class CryptoOutput extends RegistryItem {
 
   toDataItem = () => {
     let dataItem = this.cryptoKey.toDataItem();
-    dataItem.setTag(this.cryptoKey.getRegistryType().getTag() || undefined);
+    if (
+      this.cryptoKey instanceof CryptoECKey ||
+      this.cryptoKey instanceof CryptoHDKey
+    ) {
+      dataItem.setTag(this.cryptoKey.getRegistryType().getTag());
+    }
 
     this.scriptExpressions.reverse().forEach((se) => {
       const tagValue = se.getTag();
@@ -56,13 +63,25 @@ export class CryptoOutput extends RegistryItem {
       }
     } while (_tag !== undefined);
 
+    const isMultiKey =
+      scriptExpressions.length > 0 &&
+      (scriptExpressions[0].getExpression() ===
+        ScriptExpressions.MULTISIG.getExpression() ||
+        scriptExpressions[0].getExpression() ===
+          ScriptExpressions.SORTED_MULTISIG.getExpression());
     //TODO: judge is multi key by scriptExpressions
+
+    if (isMultiKey) {
+      const multiKey = MultiKey.fromDataItem(_dataItem);
+      return new CryptoOutput(scriptExpressions, multiKey);
+    }
 
     if (_dataItem.getTag() === RegistryTypes.CRYPTO_HDKEY.getTag()) {
       const cryptoHDKey = CryptoHDKey.fromDataItem(_dataItem);
       return new CryptoOutput(scriptExpressions, cryptoHDKey);
     } else {
-      throw new Error(`#[ur-registry][CryptoOutput][fn.fromDataItem]: function is not implemented yet for tag ${_dataItem.getTag()}`);
+      const cryptoECKey = CryptoECKey.fromDataItem(_dataItem);
+      return new CryptoOutput(scriptExpressions, cryptoECKey);
     }
   };
 }
