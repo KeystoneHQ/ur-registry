@@ -9,7 +9,7 @@ export abstract class RegistryItem{
   public toUR = () => {
     if (this.toDataItem() === undefined) {
       throw new Error(
-        `#ur-registry_error: registry ${this.getRegistryType()}'s method toCbor returns undefined`,
+        `#[ur-registry][RegistryItem][fn.toUR]: registry ${this.getRegistryType()}'s method toDataItem returns undefined`,
       );
     }
     return new UR(encode(this.toDataItem()), this.getRegistryType().getType());

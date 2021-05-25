@@ -17,6 +17,24 @@ enum Keys {
   note,
 }
 
+type MasterKeyProps = {
+  isMaster: true;
+  key: Buffer;
+  chainCode: Buffer;
+};
+
+type DeriveKeyProps = {
+  isMaster: false;
+  isPrivateKey?: boolean;
+  key: Buffer;
+  chainCode?: Buffer;
+  useInfo?: CryptoCoinInfo;
+  origin?: CryptoKeypath;
+  children?: CryptoKeypath;
+  parentFingerprint?: Buffer;
+  name?: string;
+  note?: string;
+};
 export class CryptoHDKey extends RegistryItem {
   private master: boolean;
   private privateKey: boolean;
@@ -44,21 +62,24 @@ export class CryptoHDKey extends RegistryItem {
     return RegistryTypes.CRYPTO_HDKEY;
   };
 
-  constructor(args: {
-    isMaster?: boolean;
-    isPrivateKey?: boolean;
-    key?: Buffer;
-    chainCode?: Buffer;
-    useInfo?: CryptoCoinInfo;
-    origin?: CryptoKeypath;
-    children?: CryptoKeypath;
-    parentFingerprint?: Buffer;
-    name?: string;
-    note?: string;
-  }) {
+  constructor(args: DeriveKeyProps | MasterKeyProps) {
     super();
-    this.master = args.isMaster;
-    this.privateKey = args.isPrivateKey;
+    if (args.isMaster) {
+      this.setupMasterKey(args);
+    } else {
+      this.setupDeriveKey(args as DeriveKeyProps);
+    }
+  }
+
+  private setupMasterKey = (args: MasterKeyProps) => {
+    this.master = true;
+    this.key = args.key;
+    this.chainCode = args.chainCode;
+  };
+
+  private setupDeriveKey = (args: DeriveKeyProps) => {
+    this.master = false;
+    this.privateKey = !!args.isPrivateKey;
     this.key = args.key;
     this.chainCode = args.chainCode;
     this.useInfo = args.useInfo;
@@ -67,7 +88,7 @@ export class CryptoHDKey extends RegistryItem {
     this.parentFingerprint = args.parentFingerprint;
     this.name = args.name;
     this.note = args.note;
-  }
+  };
 
   public toDataItem = () => {
     const map = {};
@@ -114,7 +135,7 @@ export class CryptoHDKey extends RegistryItem {
 
   public static fromDataItem = (dataItem: DataItem) => {
     const map = dataItem.getData();
-    const isMaster = map[Keys.is_master];
+    const isMaster = !!map[Keys.is_master];
     const isPrivateKey = map[Keys.is_private];
     const key = map[Keys.key_data];
     const chainCode = map[Keys.chain_code];

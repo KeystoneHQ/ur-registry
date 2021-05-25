@@ -17,7 +17,7 @@ export class CryptoKeypath extends RegistryItem {
   constructor(
     private components: PathComponent[],
     private sourceFingerprint: Buffer,
-    private depth: number,
+    private depth: number = 0,
   ) {
     super();
   }

@@ -17,7 +17,14 @@ export class CryptoOutput extends RegistryItem {
   }
 
   public getCryptoKey = () => this.cryptoKey;
-  public getHDKey = () => this.cryptoKey as CryptoHDKey;
+  public getHDKey = () => {
+    if (this.cryptoKey instanceof CryptoHDKey) {
+      return this.cryptoKey as CryptoHDKey;
+    } else
+      throw new Error(
+        `#[ur-registry][CryptoOutput][fn.getHDKey]: cryptoKey is not an instance of [CryptoHDKey]!`,
+      );
+  };
   public getScriptExpressions = () => this.scriptExpressions;
 
   toDataItem = () => {
@@ -55,7 +62,7 @@ export class CryptoOutput extends RegistryItem {
       const cryptoHDKey = CryptoHDKey.fromDataItem(_dataItem);
       return new CryptoOutput(scriptExpressions, cryptoHDKey);
     } else {
-      throw new Error('not implemented yet');
+      throw new Error(`#[ur-registry][CryptoOutput][fn.fromDataItem]: function is not implemented yet for tag ${_dataItem.getTag()}`);
     }
   };
 }
