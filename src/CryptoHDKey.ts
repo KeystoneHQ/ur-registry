@@ -97,8 +97,8 @@ export class CryptoHDKey extends RegistryItem {
       map[Keys.key_data] = this.key;
       map[Keys.chain_code] = this.chainCode;
     } else {
-      if (this.privateKey) {
-        map[Keys.is_private] = true;
+      if (this.privateKey !== undefined) {
+        map[Keys.is_private] = this.privateKey;
       }
       map[Keys.key_data] = this.key;
       if (this.chainCode) {
@@ -122,10 +122,10 @@ export class CryptoHDKey extends RegistryItem {
       if (this.parentFingerprint) {
         map[Keys.parent_fingerprint] = this.parentFingerprint.readUInt32BE();
       }
-      if (this.name) {
+      if (this.name !== undefined) {
         map[Keys.name] = this.name;
       }
-      if (this.note) {
+      if (this.note !== undefined) {
         map[Keys.note] = this.note;
       }
     }

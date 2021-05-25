@@ -57,7 +57,7 @@ export class CryptoKeypath extends RegistryItem {
     if (this.sourceFingerprint) {
       map[Keys.source_fingerprint] = this.sourceFingerprint.readUInt32BE();
     }
-    if (this.depth) {
+    if (this.depth !== undefined) {
       map[Keys.depth] = this.depth;
     }
     return new DataItem(map);
