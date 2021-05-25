@@ -29,6 +29,17 @@ export class CryptoHDKey extends RegistryItem {
   private name: string;
   private note: string;
 
+  public getKey = () => this.key;
+  public getChainCode = () => this.chainCode;
+  public isMaster = () => this.master;
+  public isPrivateKey = () => this.privateKey;
+  public getUseInfo = () => this.useInfo;
+  public getOrigin = () => this.origin;
+  public getChildren = () => this.children;
+  public getParentFingerprint = () => this.parentFingerprint;
+  public getName = () => this.name;
+  public getNote = () => this.note;
+
   public getRegistryType = () => {
     return RegistryTypes.CRYPTO_HDKEY;
   };
@@ -59,45 +70,83 @@ export class CryptoHDKey extends RegistryItem {
   }
 
   public toDataItem = () => {
-    const map = new Map<number, any>();
+    const map = {};
     if (this.master) {
-      map.set(Keys.is_master, true);
-      map.set(Keys.key_data, this.key);
-      map.set(Keys.chain_code, this.chainCode);
+      map[Keys.is_master] = true;
+      map[Keys.key_data] = this.key;
+      map[Keys.chain_code] = this.chainCode;
     } else {
       if (this.privateKey) {
-        map.set(Keys.is_private, true);
+        map[Keys.is_private] = true;
       }
-      map.set(Keys.key_data, this.key);
+      map[Keys.key_data] = this.key;
       if (this.chainCode) {
-        map.set(Keys.chain_code, this.chainCode);
+        map[Keys.chain_code] = this.chainCode;
       }
       if (this.useInfo) {
         const useInfo = this.useInfo.toDataItem();
         useInfo.setTag(this.useInfo.getRegistryType().getTag());
-        map.set(Keys.use_info, useInfo);
+        map[Keys.use_info] = useInfo;
       }
       if (this.origin) {
         const origin = this.origin.toDataItem();
         origin.setTag(this.origin.getRegistryType().getTag());
-        map.set(Keys.origin, origin);
+        map[Keys.origin] = origin;
       }
       if (this.children) {
         const children = this.children.toDataItem();
         children.setTag(this.children.getRegistryType().getTag());
-        map.set(Keys.children, children);
+        map[Keys.children] = children;
       }
       if (this.parentFingerprint) {
-        map.set(Keys.parent_fingerprint, this.parentFingerprint.readUInt32BE());
+        map[Keys.parent_fingerprint] = this.parentFingerprint.readUInt32BE();
       }
       if (this.name) {
-        map.set(Keys.name, this.name);
+        map[Keys.name] = this.name;
       }
       if (this.note) {
-        map.set(Keys.note, this.note);
+        map[Keys.note] = this.note;
       }
     }
 
     return new DataItem(map);
+  };
+
+  public static fromDataItem = (dataItem: DataItem) => {
+    const map = dataItem.getData();
+    const isMaster = map[Keys.is_master];
+    const isPrivateKey = map[Keys.is_private];
+    const key = map[Keys.key_data];
+    const chainCode = map[Keys.chain_code];
+    const useInfo = map[Keys.use_info]
+      ? CryptoCoinInfo.fromDataItem(map[Keys.use_info])
+      : undefined;
+    const origin = map[Keys.origin]
+      ? CryptoKeypath.fromDataItem(map[Keys.origin])
+      : undefined;
+    const children = map[Keys.children]
+      ? CryptoKeypath.fromDataItem(map[Keys.children])
+      : undefined;
+    let _parentFingerprint = map[Keys.parent_fingerprint];
+    let parentFingerprint: Buffer;
+    if (_parentFingerprint) {
+      parentFingerprint = Buffer.alloc(4);
+      parentFingerprint.writeUInt32BE(_parentFingerprint);
+    }
+    const name = map[Keys.name];
+    const note = map[Keys.note];
+
+    return new CryptoHDKey({
+      isMaster,
+      isPrivateKey,
+      key,
+      chainCode,
+      useInfo,
+      origin,
+      children,
+      parentFingerprint,
+      name,
+      note,
+    });
   };
 }

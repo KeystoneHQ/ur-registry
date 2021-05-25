@@ -1,5 +1,5 @@
 import { UR } from '@apocentre/bc-ur';
-import { encode } from 'cbor-sync';
+import { encode } from './lib/cbor-sync';
 import { DataItem } from './DataItem';
 import { RegistryType } from './RegistryType';
 

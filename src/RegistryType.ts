@@ -1,9 +1,6 @@
 // cbor registry types: https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-006-urtypes.md
 // Map<name, tag>
 
-import cbor from 'cbor-sync';
-import { DataItem } from './DataItem';
-
 export class RegistryType {
   constructor(private tag: number, private type: string) {}
   getTag = () => this.tag;
@@ -17,17 +14,3 @@ export const RegistryTypes = {
   CRYPTO_OUTPUT: new RegistryType(308, 'crypto-output'),
 };
 
-const patchCBOR = (registryMap: Record<string, RegistryType>) => {
-  Object.values(registryMap).forEach((v) => {
-    cbor.addSemanticEncode(v.getTag(), (data: DataItem) => {
-      if (data.getTag() === v.getTag()) {
-        return data.getData();
-      }
-    });
-    cbor.addSemanticDecode(v.getTag(), (data: any) => {
-      return new DataItem(data, v.getTag());
-    });
-  });
-};
-
-patchCBOR(RegistryTypes);

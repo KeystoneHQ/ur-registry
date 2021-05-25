@@ -12,6 +12,7 @@ module.exports = {
     "node",
   ],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(ts|js)x?$',
+  setupFilesAfterEnv: ['<rootDir>/setup-tests.js'],
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
     'src/**/*.{ts,tsx,js,jsx}',

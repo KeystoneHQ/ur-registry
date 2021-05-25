@@ -3,8 +3,8 @@ import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
 
 enum Keys {
-  type = 1,
-  network,
+  type = "1",
+  network = "2",
 }
 
 export enum Type {
@@ -42,5 +42,12 @@ export class CryptoCoinInfo extends RegistryItem {
       map.set(Keys.network, this.network);
     }
     return new DataItem(map);
+  };
+
+  public static fromDataItem = (dataItem: DataItem) => {
+    const map = new Map(Object.entries<any>(dataItem.getData()));
+    const type = map.get(Keys.type);
+    const network = map.get(Keys.network);
+    return new CryptoCoinInfo(type, network);
   };
 }

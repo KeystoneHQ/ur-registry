@@ -3,6 +3,13 @@ export class ScriptExpression {
 
   public getTag = () => this.tag;
   public getExpression = () => this.expression;
+
+  public static fromTag = (tag: number) => {
+    const se = Object.values(ScriptExpressions).find(
+      (se) => se.getTag() === tag,
+    );
+    return se;
+  };
 }
 
 export const ScriptExpressions = {

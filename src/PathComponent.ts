@@ -1,16 +1,23 @@
 export class PathComponent {
   public static readonly HARDENED_BIT = 0x80000000;
 
+  private index?: number;
   private wildcard: boolean;
+  private hardened: boolean;
 
-  constructor(private index: number, private hardened: boolean) {
-    this.index = index;
-    this.wildcard = false;
-    this.hardened = hardened;
+  constructor(args: { index?: number; hardened: boolean }) {
+    this.index = args.index;
+    this.hardened = args.hardened;
 
-    if ((this.index & PathComponent.HARDENED_BIT) !== 0) {
+    if (this.index !== undefined) {
+      this.wildcard = false;
+    } else {
+      this.wildcard = true;
+    }
+
+    if (this.index && (this.index & PathComponent.HARDENED_BIT) !== 0) {
       throw new Error(
-        `#ur-registry_error: Invalid index ${index} - most significant bit cannot be set`,
+        `#ur-registry_error: Invalid index ${this.index} - most significant bit cannot be set`,
       );
     }
   }

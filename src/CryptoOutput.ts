@@ -17,6 +17,8 @@ export class CryptoOutput extends RegistryItem {
   }
 
   public getCryptoKey = () => this.cryptoKey;
+  public getHDKey = () => this.cryptoKey as CryptoHDKey;
+  public getScriptExpressions = () => this.scriptExpressions;
 
   toDataItem = () => {
     let dataItem = this.cryptoKey.toDataItem();
@@ -31,5 +33,29 @@ export class CryptoOutput extends RegistryItem {
       }
     });
     return dataItem;
+  };
+
+  public static fromDataItem = (dataItem: DataItem) => {
+    const scriptExpressions: ScriptExpression[] = [];
+    let _dataItem = dataItem;
+    let _tag = _dataItem.getTag() || undefined;
+    do {
+      if (_tag !== RegistryTypes.CRYPTO_HDKEY.getTag()) {
+        scriptExpressions.push(ScriptExpression.fromTag(_tag));
+        _dataItem = _dataItem.getData();
+        _tag = _dataItem.getTag();
+      } else {
+        _tag = undefined;
+      }
+    } while (_tag !== undefined);
+
+    //TODO: judge is multi key by scriptExpressions
+
+    if (_dataItem.getTag() === RegistryTypes.CRYPTO_HDKEY.getTag()) {
+      const cryptoHDKey = CryptoHDKey.fromDataItem(_dataItem);
+      return new CryptoOutput(scriptExpressions, cryptoHDKey);
+    } else {
+      throw new Error('not implemented yet');
+    }
   };
 }
