@@ -13,5 +13,5 @@ export const RegistryTypes = {
   CRYPTO_COIN_INFO: new RegistryType(305, 'crypto-coin-info'),
   CRYPTO_ECKEY: new RegistryType(306, 'crypto-eckey'),
   CRYPTO_OUTPUT: new RegistryType(308, 'crypto-output'),
+  CRYPTO_PSBT: new RegistryType(310, 'crypto-psbt'),
 };
-

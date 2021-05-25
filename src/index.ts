@@ -8,3 +8,5 @@ export {
 } from './CryptoCoinInfo';
 export { CryptoKeypath } from './CryptoKeypath';
 export { CryptoOutput } from './CryptoOutput';
+export { CryptoPSBT } from './CryptoPSBT';
+export { CryptoECKey } from './CryptoECKey';

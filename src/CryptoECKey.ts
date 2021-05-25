@@ -46,7 +46,7 @@ export class CryptoECKey extends RegistryItem {
     const data = map[Keys.data];
     if (!data) {
       throw new Error(
-        `#[ur-registry][CryptoECKey][fn.fromDataItem]: decoded [dataItem]#data is undefined: ${dataItem}`,
+        `#[ur-registry][CryptoECKey][fn.fromDataItem]: decoded [dataItem][#data.data] is undefined: ${dataItem}`,
       );
     }
     return new CryptoECKey({ data, curve, privateKey });
