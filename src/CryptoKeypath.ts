@@ -1,4 +1,4 @@
-import { DataItem } from './DataItem';
+import { DataItem } from './lib/DataItem';
 import { PathComponent } from './PathComponent';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';

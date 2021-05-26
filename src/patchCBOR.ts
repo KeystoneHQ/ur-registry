@@ -1,5 +1,5 @@
 import { addSemanticDecode, addSemanticEncode } from './lib/cbor-sync';
-import { DataItem } from './DataItem';
+import { DataItem } from './lib/DataItem';
 import { RegistryTypes } from './RegistryType';
 import { ScriptExpressions } from './ScriptExpression';
 

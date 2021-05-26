@@ -1,7 +1,6 @@
-import { decode, encode } from '../lib/cbor-sync';
+import { decode, encodeDataItem } from '../lib/cbor-sync';
 import { CryptoOutput } from '../CryptoOutput';
 import { ScriptExpressions } from '../ScriptExpression';
-import { UREncoder } from '@apocentre/bc-ur';
 describe('CryptoOutput', () => {
   it('test p2pkn eckey', () => {
     const hex =
@@ -16,9 +15,8 @@ describe('CryptoOutput', () => {
     expect(cryptoOutput.getECKey().getData().toString('hex')).toBe(
       '02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5',
     );
-    expect(encode(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
-    const urEncoder = new UREncoder(cryptoOutput.toUR());
-    const ur = urEncoder.nextPart();
+    expect(encodeDataItem(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
+    const ur = cryptoOutput.toUREncoder().nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmutaadeyoyaxhdclaoswaalbmwfpwekijndyfefzjtmdrtketphhktmngrlkwsfnospypsasrhhhjonnvwtsqzwljy',
     );
@@ -36,9 +34,8 @@ describe('CryptoOutput', () => {
     expect(cryptoOutput.getECKey().getData().toString('hex')).toBe(
       '03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556',
     );
-    expect(encode(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
-    const urEncoder = new UREncoder(cryptoOutput.toUR());
-    const ur = urEncoder.nextPart();
+    expect(encodeDataItem(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
+    const ur = cryptoOutput.toUREncoder().nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmhtaadmwtaadeyoyaxhdclaxzmytkgtlkphywyoxcxfeftbbecgmectelfynfldllpisoyludlahknbbhndtkphfhlehmust',
     );
@@ -63,9 +60,8 @@ describe('CryptoOutput', () => {
     expect(secondKey.getData().toString('hex')).toBe(
       '03acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe',
     );
-    expect(encode(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
-    const urEncoder = new UREncoder(cryptoOutput.toUR());
-    const ur = urEncoder.nextPart();
+    expect(encodeDataItem(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
+    const ur = cryptoOutput.toUREncoder().nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmhtaadmtoeadaoaolftaadeyoyaxhdclaodladvwvyhhsgeccapewflrfhrlbsfndlbkcwutahvwpeloleioksglwfvybkdradtaadeyoyaxhdclaxpstylrvowtstynguaspmchlenegonyryvtmsmtmsgshgvdbbsrhebybtztdisfrnpfadremh',
     );
@@ -101,9 +97,8 @@ describe('CryptoOutput', () => {
     expect(
       cryptoOutput.getHDKey().getChildren().getSourceFingerprint(),
     ).toBeUndefined();
-    expect(encode(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
-    const urEncoder = new UREncoder(cryptoOutput.toUR());
-    const ur = urEncoder.nextPart();
+    expect(encodeDataItem(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
+    const ur = cryptoOutput.toUREncoder(1000).nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmutaaddlonaxhdclaotdqdinaeesjzmolfzsbbidlpiyhddlcximhltirfsptlvsmohscsamsgzoaxadwtaahdcxiaksataxbtgotictnybnqdoslsmdbztsmtryatjoialnolweuramsfdtolhtbadtamtaaddyoeadlncsdwykaeykaeykaocytegtqdfhattaaddyoyadlradwklawkaycyksfpdmftpyaaeelb',
     );
@@ -149,9 +144,8 @@ describe('CryptoOutput', () => {
     expect(secondKey.getChildren().getPath()).toBe('0/0/*');
     expect(secondKey.getChildren().getSourceFingerprint()).toBeUndefined();
 
-    expect(encode(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
-    const urEncoder = new UREncoder(cryptoOutput.toUR(), 1000);
-    const ur = urEncoder.nextPart();
+    expect(encodeDataItem(cryptoOutput.toDataItem()).toString('hex')).toBe(hex);
+    const ur = cryptoOutput.toUREncoder(1000).nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmetaadmtoeadadaolftaaddloxaxhdclaxsbsgptsolkltkndsmskiaelfhhmdimcnmnlgutzotecpsfveylgrbdhptbpsveosaahdcxhnganelacwldjnlschnyfxjyplrllfdrplpswdnbuyctlpwyfmmhgsgtwsrymtldamtaaddyoyaxaeattaaddyoyadlnadwkaewklawktaaddloxaxhdclaoztnnhtwtpslgndfnwpzedrlomnclchrdfsayntlplplojznslfjejecpptlgbgwdaahdcxwtmhnyzmpkkbvdpyvwutglbeahmktyuogusnjonththhdwpsfzvdfpdlcndlkensamtaaddyoeadlfaewkaocyrycmrnvwattaaddyoyadlnaewkaewklawkkkztdlon',
     );

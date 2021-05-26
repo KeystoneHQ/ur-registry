@@ -7,6 +7,7 @@
     global.CBOR = factory();
   }
 })(this, function () {
+  const { DataItem } = require('./DataItem');
   var CBOR = (function () {
     function BinaryHex(hex) {
       this.$hex = hex;
@@ -396,12 +397,39 @@
         }
         throw new Error('Unsupported output format: ' + format);
       },
+      // DataItem: {getData: () => any}
+      encodeDataItem: function (data, format) {
+        for (var i = 0; i < writerFunctions.length; i++) {
+          var func = writerFunctions[i];
+          var writer = func(format);
+          if (writer) {
+            if (data.getTag() !== undefined) {
+              encodeWriter(data, writer);
+              return writer.result();
+            } else {
+              encodeWriter(data.getData(), writer);
+              return writer.result();
+            }
+          }
+        }
+        throw new Error('Unsupported output format: ' + format);
+      },
       decode: function (data, format) {
         for (var i = 0; i < readerFunctions.length; i++) {
           var func = readerFunctions[i];
           var reader = func(data, format);
           if (reader) {
             return decodeReader(reader);
+          }
+        }
+        throw new Error('Unsupported input format: ' + format);
+      },
+      decodeToDataItem: function (data, format) {
+        for (var i = 0; i < readerFunctions.length; i++) {
+          var func = readerFunctions[i];
+          var reader = func(data, format);
+          if (reader) {
+            return new DataItem(decodeReader(reader));
           }
         }
         throw new Error('Unsupported input format: ' + format);

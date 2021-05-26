@@ -1,6 +1,6 @@
 import { CryptoECKey } from './CryptoECKey';
 import { CryptoHDKey } from './CryptoHDKey';
-import { DataItem } from './DataItem';
+import { DataItem } from './lib/DataItem';
 import { MultiKey } from './MultiKey';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
