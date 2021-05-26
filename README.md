@@ -2,6 +2,10 @@
 
 This repository is an implementation of [the BC-UR Registry specification](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-006-urtypes.md)
 
+Currently support:
+
+crypto-output, crypto-eckey, crypto-hdkey, crypto-keypath, crypto-coin-info, crypto-psbt
+
 ## Installing
 
 To install, run:
