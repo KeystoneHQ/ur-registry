@@ -16,14 +16,15 @@ export class CryptoKeypath extends RegistryItem {
   };
 
   constructor(
-    private components: PathComponent[],
-    private sourceFingerprint: Buffer,
-    private depth,
+    private components?: PathComponent[],
+    private sourceFingerprint?: Buffer,
+    private depth?: number,
   ) {
     super();
   }
 
   public getPath = () => {
+    if (!this.components) return undefined;
     if (this.components.length === 0) {
       return undefined;
     }
@@ -43,14 +44,15 @@ export class CryptoKeypath extends RegistryItem {
   toDataItem = () => {
     const map: Record<string, any> = {};
     const components = [];
-    this.components.forEach((component) => {
-      if (component.isWildcard()) {
-        components.push([]);
-      } else {
-        components.push(component.getIndex());
-      }
-      components.push(component.isHardened() ? true : false);
-    });
+    this.components &&
+      this.components.forEach((component) => {
+        if (component.isWildcard()) {
+          components.push([]);
+        } else {
+          components.push(component.getIndex());
+        }
+        components.push(component.isHardened() ? true : false);
+      });
 
     if (components.length > 0) {
       map[Keys.components] = components;

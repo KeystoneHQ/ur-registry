@@ -1,4 +1,11 @@
-import { CryptoECKey, CryptoOutput, MultiKey } from '../src';
+import {
+  CryptoECKey,
+  CryptoHDKey,
+  CryptoKeypath,
+  CryptoOutput,
+  MultiKey,
+  PathComponent,
+} from '../src';
 import { ScriptExpressions } from '../src';
 describe('CryptoOutput', () => {
   it('test p2pkh eckey', () => {
@@ -130,9 +137,9 @@ describe('CryptoOutput', () => {
       'd90193d9012fa503582102d2b36900396c9282fa14628566582f206a5dd0bcc8d5e892611806cafb0301f0045820637807030d55d01f9a0cb3a7839515d796bd07706386a6eddf06cc29a65a0e2906d90130a20186182cf500f500f5021ad34db33f07d90130a1018401f480f4081a78412e3a';
     const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));
 
-    expect(cryptoOutput.getScriptExpressions()[0].getTag()).toBe(
-      ScriptExpressions.PUBLIC_KEY_HASH.getTag(),
-    );
+    expect(cryptoOutput.getScriptExpressions()).toStrictEqual([
+      ScriptExpressions.PUBLIC_KEY_HASH,
+    ]);
     expect(cryptoOutput.getHDKey().getKey().toString('hex')).toBe(
       '02d2b36900396c9282fa14628566582f206a5dd0bcc8d5e892611806cafb0301f0',
     );
@@ -154,6 +161,46 @@ describe('CryptoOutput', () => {
     expect(
       cryptoOutput.getHDKey().getChildren().getSourceFingerprint(),
     ).toBeUndefined();
+    expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    const ur = cryptoOutput.toUREncoder(1000).nextPart();
+    expect(ur).toBe(
+      'ur:crypto-output/taadmutaaddlonaxhdclaotdqdinaeesjzmolfzsbbidlpiyhddlcximhltirfsptlvsmohscsamsgzoaxadwtaahdcxiaksataxbtgotictnybnqdoslsmdbztsmtryatjoialnolweuramsfdtolhtbadtamtaaddyoeadlncsdwykaeykaeykaocytegtqdfhattaaddyoyadlradwklawkaycyksfpdmftpyaaeelb',
+    );
+  });
+
+  it('test construct p2pkh hdkey', () => {
+    const hex =
+      'd90193d9012fa503582102d2b36900396c9282fa14628566582f206a5dd0bcc8d5e892611806cafb0301f0045820637807030d55d01f9a0cb3a7839515d796bd07706386a6eddf06cc29a65a0e2906d90130a20186182cf500f500f5021ad34db33f07d90130a1018401f480f4081a78412e3a';
+    const scriptExpressions = [ScriptExpressions.PUBLIC_KEY_HASH];
+    const originKeypath = new CryptoKeypath(
+      [
+        new PathComponent({ index: 44, hardened: true }),
+        new PathComponent({ index: 0, hardened: true }),
+        new PathComponent({ index: 0, hardened: true }),
+      ],
+      Buffer.from('d34db33f', 'hex'),
+    );
+    const childrenKeypath = new CryptoKeypath([
+      new PathComponent({ index: 1, hardened: false }),
+      new PathComponent({ hardened: false }),
+    ]);
+    const hdkey = new CryptoHDKey({
+      isMaster: false,
+      key: Buffer.from(
+        '02d2b36900396c9282fa14628566582f206a5dd0bcc8d5e892611806cafb0301f0',
+        'hex',
+      ),
+      chainCode: Buffer.from(
+        '637807030d55d01f9a0cb3a7839515d796bd07706386a6eddf06cc29a65a0e29',
+        'hex',
+      ),
+      origin: originKeypath,
+      children: childrenKeypath,
+      parentFingerprint: Buffer.from('78412e3a', 'hex'),
+    });
+
+    const cryptoOutput = new CryptoOutput(scriptExpressions, hdkey);
+
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
     const ur = cryptoOutput.toUREncoder(1000).nextPart();
     expect(ur).toBe(
@@ -201,6 +248,62 @@ describe('CryptoOutput', () => {
     expect(secondKey.getChildren().getPath()).toBe('0/0/*');
     expect(secondKey.getChildren().getSourceFingerprint()).toBeUndefined();
 
+    expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    const ur = cryptoOutput.toUREncoder(1000).nextPart();
+    expect(ur).toBe(
+      'ur:crypto-output/taadmetaadmtoeadadaolftaaddloxaxhdclaxsbsgptsolkltkndsmskiaelfhhmdimcnmnlgutzotecpsfveylgrbdhptbpsveosaahdcxhnganelacwldjnlschnyfxjyplrllfdrplpswdnbuyctlpwyfmmhgsgtwsrymtldamtaaddyoyaxaeattaaddyoyadlnadwkaewklawktaaddloxaxhdclaoztnnhtwtpslgndfnwpzedrlomnclchrdfsayntlplplojznslfjejecpptlgbgwdaahdcxwtmhnyzmpkkbvdpyvwutglbeahmktyuogusnjonththhdwpsfzvdfpdlcndlkensamtaaddyoeadlfaewkaocyrycmrnvwattaaddyoyadlnaewkaewklawkkkztdlon',
+    );
+  });
+
+  it('test construct multi hdkey', () => {
+    const hex =
+      'd90191d90196a201010282d9012fa403582103cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a704582060499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd968906d90130a1030007d90130a1018601f400f480f4d9012fa403582102fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea045820f0909affaa7ee7abe5dd4e100598d4dc53cd709d5a5c2cac40e7412f232f7c9c06d90130a2018200f4021abd16bee507d90130a1018600f400f480f4';
+    const scriptExpressions = [
+      ScriptExpressions.WITNESS_SCRIPT_HASH,
+      ScriptExpressions.MULTISIG,
+    ];
+    const firstKey = new CryptoHDKey({
+      isMaster: false,
+      key: Buffer.from(
+        '03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7',
+        'hex',
+      ),
+      chainCode: Buffer.from(
+        '60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689',
+        'hex',
+      ),
+      origin: new CryptoKeypath(undefined, undefined, 0),
+      children: new CryptoKeypath(
+        [
+          new PathComponent({ index: 1, hardened: false }),
+          new PathComponent({ index: 0, hardened: false }),
+          new PathComponent({ hardened: false }),
+        ],
+        undefined,
+      ),
+    });
+    const secondKey = new CryptoHDKey({
+      isMaster: false,
+      key: Buffer.from(
+        '02fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea',
+        'hex',
+      ),
+      chainCode: Buffer.from(
+        'f0909affaa7ee7abe5dd4e100598d4dc53cd709d5a5c2cac40e7412f232f7c9c',
+        'hex',
+      ),
+      origin: new CryptoKeypath(
+        [new PathComponent({ index: 0, hardened: false })],
+        Buffer.from('bd16bee5', 'hex'),
+      ),
+      children: new CryptoKeypath([
+        new PathComponent({ index: 0, hardened: false }),
+        new PathComponent({ index: 0, hardened: false }),
+        new PathComponent({ hardened: false }),
+      ]),
+    });
+    const multiKey = new MultiKey(1, [], [firstKey, secondKey]);
+    const cryptoOutput = new CryptoOutput(scriptExpressions, multiKey);
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
     const ur = cryptoOutput.toUREncoder(1000).nextPart();
     expect(ur).toBe(
