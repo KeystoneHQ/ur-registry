@@ -20,9 +20,11 @@ yarn add @keystonehq/bc-ur-registry
 
 ```js
 import { CryptoOutput } from '@keystonehq/bc-ur-registry';
+// decode hex from UR: "ur:crypto-output/taadmutaadeyoyaxhdclaoswaalbmwfpwekijndyfefzjtmdrtketphhktmngrlkwsfnospypsasrhhhjonnvwtsqzwljy"
+// by other BC-UR encoding or decoding library
 const hex =
   'd90193d90132a103582102c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5';
-const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from('hex', 'hex'));
+const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));
 // You can know which class[CryptoOutput/CryptoHDKey/CryptoECKey/...] to use by reading ur, e.g.
 // "ur:crypto-output/taadmutaadeyoyaxhdclaoswaalbmwfpwekijndyfefzjtmdrtketphhktmngrlkwsfnospypsasrhhhjonnvwtsqzwljy"
 ```
