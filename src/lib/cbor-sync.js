@@ -429,7 +429,12 @@
           var func = readerFunctions[i];
           var reader = func(data, format);
           if (reader) {
-            return new DataItem(decodeReader(reader));
+            const result = decodeReader(reader);
+            if (result instanceof DataItem) {
+              return result;
+            } else {
+              return new DataItem(result);
+            }
           }
         }
         throw new Error('Unsupported input format: ' + format);

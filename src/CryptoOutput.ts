@@ -54,7 +54,9 @@ export class CryptoOutput extends RegistryItem {
       dataItem.setTag(this.cryptoKey.getRegistryType().getTag());
     }
 
-    this.scriptExpressions.reverse().forEach((se) => {
+    const clonedSe = [...this.scriptExpressions];
+
+    clonedSe.reverse().forEach((se) => {
       const tagValue = se.getTag();
       if (dataItem.getTag() === undefined) {
         dataItem.setTag(tagValue);
@@ -62,29 +64,32 @@ export class CryptoOutput extends RegistryItem {
         dataItem = new DataItem(dataItem, tagValue);
       }
     });
+
     return dataItem;
   };
+
+  public toString = () => {
+    
+  }
 
   public static fromDataItem = (dataItem: DataItem) => {
     const scriptExpressions: ScriptExpression[] = [];
     let _dataItem = dataItem;
-    let _tag = _dataItem.getTag() || undefined;
-    do {
-      if (
-        _tag !== RegistryTypes.CRYPTO_HDKEY.getTag() &&
-        _tag !== RegistryTypes.CRYPTO_ECKEY.getTag()
-      ) {
-        scriptExpressions.push(ScriptExpression.fromTag(_tag));
+    while (true) {
+      let _tag = _dataItem.getTag() || undefined;
+      const se = ScriptExpression.fromTag(_tag);
+      if (se) {
+        scriptExpressions.push(se);
         if (_dataItem.getData() instanceof DataItem) {
           _dataItem = _dataItem.getData();
           _tag = _dataItem.getTag();
         } else {
-          _tag = undefined;
+          break;
         }
       } else {
-        _tag = undefined;
+        break;
       }
-    } while (_tag !== undefined);
+    }
     const seLength = scriptExpressions.length;
     const isMultiKey =
       seLength > 0 &&

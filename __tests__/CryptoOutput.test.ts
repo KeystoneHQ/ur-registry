@@ -1,10 +1,10 @@
-import { CryptoOutput } from '../src';
+import { CryptoECKey, CryptoOutput, MultiKey } from '../src';
 import { ScriptExpressions } from '../src';
 describe('CryptoOutput', () => {
-  it('test p2pkn eckey', () => {
+  it('test p2pkh eckey', () => {
     const hex =
       'd90193d90132a103582102c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5';
-    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));;
+    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));
 
     expect(cryptoOutput.getScriptExpressions()).toStrictEqual([
       ScriptExpressions.PUBLIC_KEY_HASH,
@@ -18,10 +18,28 @@ describe('CryptoOutput', () => {
       'ur:crypto-output/taadmutaadeyoyaxhdclaoswaalbmwfpwekijndyfefzjtmdrtketphhktmngrlkwsfnospypsasrhhhjonnvwtsqzwljy',
     );
   });
+  it('test construct p2pkh eckey', () => {
+    const scriptExpressions = [ScriptExpressions.PUBLIC_KEY_HASH];
+    const ecKey = new CryptoECKey({
+      data: Buffer.from(
+        '02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5',
+        'hex',
+      ),
+    });
+
+    const cryptoOutput = new CryptoOutput(scriptExpressions, ecKey);
+    expect(cryptoOutput.toCBOR().toString('hex')).toBe(
+      'd90193d90132a103582102c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5',
+    );
+    const ur = cryptoOutput.toUREncoder().nextPart();
+    expect(ur).toBe(
+      'ur:crypto-output/taadmutaadeyoyaxhdclaoswaalbmwfpwekijndyfefzjtmdrtketphhktmngrlkwsfnospypsasrhhhjonnvwtsqzwljy',
+    );
+  });
   it('test p2sh p2wpkh eckey', () => {
     const hex =
       'd90190d90194d90132a103582103fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556';
-    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));;
+    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));
     expect(cryptoOutput.getScriptExpressions()).toStrictEqual([
       ScriptExpressions.SCRIPT_HASH,
       ScriptExpressions.WITNESS_PUBLIC_KEY_HASH,
@@ -35,10 +53,30 @@ describe('CryptoOutput', () => {
       'ur:crypto-output/taadmhtaadmwtaadeyoyaxhdclaxzmytkgtlkphywyoxcxfeftbbecgmectelfynfldllpisoyludlahknbbhndtkphfhlehmust',
     );
   });
+  it('test construct p2sh p2wpkh eckey', () => {
+    const hex =
+      'd90190d90194d90132a103582103fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556';
+    const scriptExpressions = [
+      ScriptExpressions.SCRIPT_HASH,
+      ScriptExpressions.WITNESS_PUBLIC_KEY_HASH,
+    ];
+    const ecKey = new CryptoECKey({
+      data: Buffer.from(
+        '03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556',
+        'hex',
+      ),
+    });
+    const cryptoOutput = new CryptoOutput(scriptExpressions, ecKey);
+    expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    const ur = cryptoOutput.toUREncoder().nextPart();
+    expect(ur).toBe(
+      'ur:crypto-output/taadmhtaadmwtaadeyoyaxhdclaxzmytkgtlkphywyoxcxfeftbbecgmectelfynfldllpisoyludlahknbbhndtkphfhlehmust',
+    );
+  });
   it('test multi eckey', () => {
     const hex =
       'd90190d90196a201020282d90132a1035821022f01e5e15cca351daff3843fb70f3c2f0a1bdd05e5af888a67784ef3e10a2a01d90132a103582103acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe';
-    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));;
+    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));
     expect(cryptoOutput.getScriptExpressions()).toStrictEqual([
       ScriptExpressions.SCRIPT_HASH,
       ScriptExpressions.MULTISIG,
@@ -59,10 +97,38 @@ describe('CryptoOutput', () => {
       'ur:crypto-output/taadmhtaadmtoeadaoaolftaadeyoyaxhdclaodladvwvyhhsgeccapewflrfhrlbsfndlbkcwutahvwpeloleioksglwfvybkdradtaadeyoyaxhdclaxpstylrvowtstynguaspmchlenegonyryvtmsmtmsgshgvdbbsrhebybtztdisfrnpfadremh',
     );
   });
+  it('test construct multi eckey', () => {
+    const hex =
+      'd90190d90196a201020282d90132a1035821022f01e5e15cca351daff3843fb70f3c2f0a1bdd05e5af888a67784ef3e10a2a01d90132a103582103acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe';
+    const scriptExpressions = [
+      ScriptExpressions.SCRIPT_HASH,
+      ScriptExpressions.MULTISIG,
+    ];
+
+    const firstKey = new CryptoECKey({
+      data: Buffer.from(
+        '022f01e5e15cca351daff3843fb70f3c2f0a1bdd05e5af888a67784ef3e10a2a01',
+        'hex',
+      ),
+    });
+    const secondKey = new CryptoECKey({
+      data: Buffer.from(
+        '03acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe',
+        'hex',
+      ),
+    });
+    const multiKey = new MultiKey(2, [firstKey, secondKey], []);
+    const cryptoOutput = new CryptoOutput(scriptExpressions, multiKey);
+    expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    const ur = cryptoOutput.toUREncoder().nextPart();
+    expect(ur).toBe(
+      'ur:crypto-output/taadmhtaadmtoeadaoaolftaadeyoyaxhdclaodladvwvyhhsgeccapewflrfhrlbsfndlbkcwutahvwpeloleioksglwfvybkdradtaadeyoyaxhdclaxpstylrvowtstynguaspmchlenegonyryvtmsmtmsgshgvdbbsrhebybtztdisfrnpfadremh',
+    );
+  });
   it('test p2pkh hdkey', () => {
     const hex =
       'd90193d9012fa503582102d2b36900396c9282fa14628566582f206a5dd0bcc8d5e892611806cafb0301f0045820637807030d55d01f9a0cb3a7839515d796bd07706386a6eddf06cc29a65a0e2906d90130a20186182cf500f500f5021ad34db33f07d90130a1018401f480f4081a78412e3a';
-    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));;
+    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));
 
     expect(cryptoOutput.getScriptExpressions()[0].getTag()).toBe(
       ScriptExpressions.PUBLIC_KEY_HASH.getTag(),
@@ -97,7 +163,7 @@ describe('CryptoOutput', () => {
   it('test multi hdKey', () => {
     const hex =
       'd90191d90196a201010282d9012fa403582103cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a704582060499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd968906d90130a1030007d90130a1018601f400f480f4d9012fa403582102fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea045820f0909affaa7ee7abe5dd4e100598d4dc53cd709d5a5c2cac40e7412f232f7c9c06d90130a2018200f4021abd16bee507d90130a1018600f400f480f4';
-    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));;
+    const cryptoOutput = CryptoOutput.fromCBOR(Buffer.from(hex, 'hex'));
 
     expect(cryptoOutput.getScriptExpressions()).toStrictEqual([
       ScriptExpressions.WITNESS_SCRIPT_HASH,
@@ -128,7 +194,9 @@ describe('CryptoOutput', () => {
       'f0909affaa7ee7abe5dd4e100598d4dc53cd709d5a5c2cac40e7412f232f7c9c',
     );
     expect(secondKey.getOrigin().getPath()).toBe('0');
-    expect(secondKey.getOrigin().getSourceFingerprint().toString('hex')).toBe('bd16bee5');
+    expect(secondKey.getOrigin().getSourceFingerprint().toString('hex')).toBe(
+      'bd16bee5',
+    );
     expect(secondKey.getOrigin().getDepth()).toBeUndefined();
     expect(secondKey.getChildren().getPath()).toBe('0/0/*');
     expect(secondKey.getChildren().getSourceFingerprint()).toBeUndefined();

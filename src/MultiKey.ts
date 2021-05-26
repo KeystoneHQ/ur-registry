@@ -14,8 +14,8 @@ export class MultiKey extends RegistryItem {
 
   constructor(
     private threshold: number,
-    private ecKeys: RegistryItem[],
-    private hdKeys: RegistryItem[],
+    private ecKeys: CryptoECKey[],
+    private hdKeys: CryptoHDKey[],
   ) {
     super();
   }
@@ -27,11 +27,10 @@ export class MultiKey extends RegistryItem {
   toDataItem = () => {
     const map = {};
     map[Keys.threshold] = this.threshold;
-    const keys = [];
-    this.ecKeys.concat(this.hdKeys).forEach((k) => {
+    const keys: DataItem[] = [...this.ecKeys, ...this.hdKeys].map((k) => {
       const dataItem = k.toDataItem();
       dataItem.setTag(k.getRegistryType().getTag());
-      keys.push(dataItem);
+      return dataItem;
     });
     map[Keys.keys] = keys;
     return new DataItem(map);

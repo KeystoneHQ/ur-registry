@@ -11,8 +11,6 @@ yarn add @keystonehq/bc-ur-registry
 ## Usage
 
 ```
-
-
 import {CryptoOutput, CryptoHDKey, CryptoKeypath, CryptoCoinInfo} from "@keystonehq/bc-ur-registry";
 
 

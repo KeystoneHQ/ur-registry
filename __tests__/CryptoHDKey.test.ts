@@ -40,7 +40,7 @@ describe('CryptoHDKey', () => {
     expect(cryptoHDKey.getParentFingerprint().toString('hex')).toBe('e9181cf3');
     expect(cryptoHDKey.getChildren()).toBeUndefined();
     expect(cryptoHDKey.toCBOR().toString('hex')).toBe(hex.toLowerCase());
-    const ur = cryptoHDKey.toUREncoder().nextPart();
+    const ur = cryptoHDKey.toUREncoder(1000).nextPart();
     expect(ur).toBe(
       'ur:crypto-hdkey/onaxhdclaojlvoechgferkdpqdiabdrflawshlhdmdcemtfnlrctghchbdolvwsednvdztbgolaahdcxtottgostdkhfdahdlykkecbbweskrymwflvdylgerkloswtbrpfdbsticmwylklpahtaadehoyaoadamtaaddyoyadlecsdwykadykadykaewkadwkaycywlcscewfihbdaehn',
     );
