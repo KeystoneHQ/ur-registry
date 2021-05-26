@@ -1,3 +1,4 @@
+import { decodeToDataItem } from './lib/cbor-sync';
 import { DataItem } from './lib/DataItem';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
@@ -49,5 +50,10 @@ export class CryptoCoinInfo extends RegistryItem {
     const type = map.get(Keys.type);
     const network = map.get(Keys.network);
     return new CryptoCoinInfo(type, network);
+  };
+
+  public static fromCBOR = (_cborPayload: Buffer) => {
+    const dataItem = decodeToDataItem(_cborPayload);
+    return CryptoCoinInfo.fromDataItem(dataItem);
   };
 }

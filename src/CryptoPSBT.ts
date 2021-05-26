@@ -1,3 +1,4 @@
+import { decodeToDataItem } from './lib/cbor-sync';
 import { DataItem } from './lib/DataItem';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
@@ -9,13 +10,13 @@ export class CryptoPSBT extends RegistryItem {
     super();
   }
 
-  getPSBT = () => this.psbt;
+  public getPSBT = () => this.psbt;
 
-  toDataItem = () => {
+  public toDataItem = () => {
     return new DataItem(this.psbt);
   };
 
-  static fromDataItem = (dataItem: DataItem) => {
+  public static fromDataItem = (dataItem: DataItem) => {
     const psbt = dataItem.getData();
     if (!psbt) {
       throw new Error(
@@ -23,5 +24,10 @@ export class CryptoPSBT extends RegistryItem {
       );
     }
     return new CryptoPSBT(psbt);
+  };
+
+  public static fromCBOR = (_cborPayload: Buffer) => {
+    const dataItem = decodeToDataItem(_cborPayload);
+    return CryptoPSBT.fromDataItem(dataItem);
   };
 }

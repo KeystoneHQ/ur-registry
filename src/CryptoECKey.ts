@@ -1,3 +1,4 @@
+import { decodeToDataItem } from './lib/cbor-sync';
 import { DataItem } from './lib/DataItem';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
@@ -50,5 +51,10 @@ export class CryptoECKey extends RegistryItem {
       );
     }
     return new CryptoECKey({ data, curve, privateKey });
+  };
+
+  public static fromCBOR = (_cborPayload: Buffer) => {
+    const dataItem = decodeToDataItem(_cborPayload);
+    return CryptoECKey.fromDataItem(dataItem);
   };
 }

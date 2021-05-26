@@ -6,16 +6,17 @@ import { RegistryType } from './RegistryType';
 export abstract class RegistryItem {
   abstract getRegistryType: () => RegistryType;
   abstract toDataItem: () => DataItem;
-  public toUR = () => {
+  public toCBOR = () => {
     if (this.toDataItem() === undefined) {
       throw new Error(
-        `#[ur-registry][RegistryItem][fn.toUR]: registry ${this.getRegistryType()}'s method toDataItem returns undefined`,
+        `#[ur-registry][RegistryItem][fn.toCBOR]: registry ${this.getRegistryType()}'s method toDataItem returns undefined`,
       );
     }
-    return new UR(
-      encodeDataItem(this.toDataItem()),
-      this.getRegistryType().getType(),
-    );
+    return encodeDataItem(this.toDataItem());
+  };
+
+  public toUR = () => {
+    return new UR(this.toCBOR(), this.getRegistryType().getType());
   };
 
   public toUREncoder = (

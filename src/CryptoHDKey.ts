@@ -1,5 +1,6 @@
 import { CryptoCoinInfo } from './CryptoCoinInfo';
 import { CryptoKeypath } from './CryptoKeypath';
+import { decodeToDataItem } from './lib/cbor-sync';
 import { DataItem } from './lib/DataItem';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
@@ -168,5 +169,10 @@ export class CryptoHDKey extends RegistryItem {
       name,
       note,
     });
+  };
+
+  public static fromCBOR = (_cborPayload: Buffer) => {
+    const dataItem = decodeToDataItem(_cborPayload);
+    return CryptoHDKey.fromDataItem(dataItem);
   };
 }

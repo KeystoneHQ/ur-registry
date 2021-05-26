@@ -1,3 +1,4 @@
+import { decodeToDataItem } from './lib/cbor-sync';
 import { DataItem } from './lib/DataItem';
 import { PathComponent } from './PathComponent';
 import { RegistryItem } from './RegistryItem';
@@ -88,5 +89,10 @@ export class CryptoKeypath extends RegistryItem {
     }
     const depth = map[Keys.depth];
     return new CryptoKeypath(pathComponents, sourceFingerprint, depth);
+  };
+
+  public static fromCBOR = (_cborPayload: Buffer) => {
+    const dataItem = decodeToDataItem(_cborPayload);
+    return CryptoKeypath.fromDataItem(dataItem);
   };
 }

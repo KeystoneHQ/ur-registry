@@ -1,12 +1,17 @@
 import './patchCBOR';
 
 export { CryptoHDKey } from './CryptoHDKey';
+export { CryptoKeypath } from './CryptoKeypath';
 export {
   CryptoCoinInfo,
   Type as CryptoCoinInfoType,
   Network as CryptoCoinInfoNetwork,
 } from './CryptoCoinInfo';
-export { CryptoKeypath } from './CryptoKeypath';
+export { CryptoECKey } from './CryptoECKey';
 export { CryptoOutput } from './CryptoOutput';
 export { CryptoPSBT } from './CryptoPSBT';
-export { CryptoECKey } from './CryptoECKey';
+
+export { MultiKey } from './MultiKey';
+
+export { ScriptExpressions } from './ScriptExpression';
+export { PathComponent } from './PathComponent';

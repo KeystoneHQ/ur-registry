@@ -1,5 +1,6 @@
 import { CryptoECKey } from './CryptoECKey';
 import { CryptoHDKey } from './CryptoHDKey';
+import { decodeToDataItem } from './lib/cbor-sync';
 import { DataItem } from './lib/DataItem';
 import { MultiKey } from './MultiKey';
 import { RegistryItem } from './RegistryItem';
@@ -104,5 +105,10 @@ export class CryptoOutput extends RegistryItem {
       const cryptoECKey = CryptoECKey.fromDataItem(_dataItem);
       return new CryptoOutput(scriptExpressions, cryptoECKey);
     }
+  };
+
+  public static fromCBOR = (_cborPayload: Buffer) => {
+    const dataItem = decodeToDataItem(_cborPayload);
+    return CryptoOutput.fromDataItem(dataItem);
   };
 }
