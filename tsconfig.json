@@ -13,7 +13,9 @@
     "noImplicitReturns": true,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "removeComments": true,
+    "outDir": "./dist"
   },
-  "include": ["src/**/*", "__tests__/**/*"]
+  "include": ["src/**/*"]
 }
