@@ -1,17 +1,47 @@
 import './patchCBOR';
 
-export { CryptoHDKey } from './CryptoHDKey';
-export { CryptoKeypath } from './CryptoKeypath';
-export {
+import { CryptoHDKey } from './CryptoHDKey';
+import { CryptoKeypath } from './CryptoKeypath';
+import {
   CryptoCoinInfo,
   Type as CryptoCoinInfoType,
   Network as CryptoCoinInfoNetwork,
 } from './CryptoCoinInfo';
-export { CryptoECKey } from './CryptoECKey';
-export { CryptoOutput } from './CryptoOutput';
-export { CryptoPSBT } from './CryptoPSBT';
+import { CryptoECKey } from './CryptoECKey';
+import  { CryptoOutput } from './CryptoOutput';
+import { CryptoPSBT } from './CryptoPSBT';
 
-export { MultiKey } from './MultiKey';
+import { MultiKey } from './MultiKey';
 
-export { ScriptExpressions } from './ScriptExpression';
-export { PathComponent } from './PathComponent';
+import { ScriptExpressions } from './ScriptExpression';
+import { PathComponent } from './PathComponent';
+
+const URlib = {
+  CryptoHDKey,
+  CryptoKeypath,
+  CryptoCoinInfo,
+  CryptoCoinInfoType,
+  CryptoCoinInfoNetwork,
+  CryptoECKey,
+  CryptoOutput,
+  CryptoPSBT,
+  MultiKey,
+  ScriptExpressions,
+  PathComponent  
+}
+
+export {
+  CryptoHDKey,
+  CryptoKeypath,
+  CryptoCoinInfo,
+  CryptoCoinInfoType,
+  CryptoCoinInfoNetwork,
+  CryptoECKey,
+  CryptoOutput,
+  CryptoPSBT,
+  MultiKey,
+  ScriptExpressions,
+  PathComponent  
+}
+
+export default URlib
