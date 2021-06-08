@@ -4,7 +4,7 @@ This repository is an implementation of [the BC-UR Registry specification](https
 
 Currently support:
 
-crypto-output, crypto-eckey, crypto-hdkey, crypto-keypath, crypto-coin-info, crypto-psbt
+crypto-output, crypto-eckey, crypto-hdkey, crypto-keypath, crypto-coin-info, crypto-psbt, crypto-account
 
 ## Installing
 
