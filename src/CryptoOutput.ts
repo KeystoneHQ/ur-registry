@@ -68,10 +68,6 @@ export class CryptoOutput extends RegistryItem {
     return dataItem;
   };
 
-  public toString = () => {
-    
-  }
-
   public static fromDataItem = (dataItem: DataItem) => {
     const scriptExpressions: ScriptExpression[] = [];
     let _dataItem = dataItem;
