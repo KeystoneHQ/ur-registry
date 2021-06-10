@@ -22,7 +22,7 @@ const patchTags = (tags: number[]) => {
   });
 };
 
-const registryTags = Object.values(RegistryTypes).map((r) => r.getTag());
+const registryTags = Object.values(RegistryTypes).filter(r => !!r.getTag()).map((r) => r.getTag());
 const scriptExpressionTags = Object.values(ScriptExpressions).map((se) =>
   se.getTag(),
 );

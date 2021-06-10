@@ -8,9 +8,11 @@ import {
   Network as CryptoCoinInfoNetwork,
 } from './CryptoCoinInfo';
 import { CryptoECKey } from './CryptoECKey';
+import { Bytes } from './Bytes';
 import { CryptoOutput } from './CryptoOutput';
 import { CryptoPSBT } from './CryptoPSBT';
 import { CryptoAccount } from './CryptoAccount';
+import { URRegistryDecoder } from './Decoder';
 
 import { MultiKey } from './MultiKey';
 
@@ -18,6 +20,8 @@ import { ScriptExpressions } from './ScriptExpression';
 import { PathComponent } from './PathComponent';
 
 const URlib = {
+  URRegistryDecoder,
+  Bytes,
   CryptoAccount,
   CryptoHDKey,
   CryptoKeypath,
@@ -33,6 +37,8 @@ const URlib = {
 };
 
 export {
+  URRegistryDecoder,
+  Bytes,
   CryptoAccount,
   CryptoHDKey,
   CryptoKeypath,
