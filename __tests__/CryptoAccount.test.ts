@@ -7,6 +7,9 @@ import {
   CryptoAccount,
 } from '../';
 
+import * as bitcoin from 'bitcoinjs-lib';
+import { mnemonicToSeedSync } from 'bip39';
+
 describe('CryptoAccount', () => {
   it('test seed', () => {
     const hex =
@@ -273,6 +276,43 @@ describe('CryptoAccount', () => {
     const ur = cryptoAccount.toUREncoder(2000).nextPart();
     expect(ur).toBe(
       'ur:crypto-account/oeadcyemrewytyaolntaadmutaaddloxaxhdclaxwmfmdeiamecsdsemgtvsjzcncygrkowtrontzschgezokstswkkscfmklrtauteyaahdcxiehfonurdppfyntapejpproypegrdawkgmaewejlsfdtsrfybdehcaflmtrlbdhpamtaaddyoyadlncsdwykaeykaeykaycynlytsnyltaadmhtaadmwtaaddloxaxhdclaostvelfemdyynwydwyaievosrgmambklovabdgypdglldvespsthysadamhpmjeinaahdcxntdllnaaeykoytdacygegwhgjsiyonpywmcmrpwphsvodsrerozsbyaxluzcoxdpamtaaddyoyadlncsehykaeykaeykaycypdbskeuytaadmwtaaddloxaxhdclaxzcfxeegdrpmogrgwkbzctlttweadkiengrwlhtprremouoluutqdpfbncedkynfhaahdcxjpwevdeogthttkmeswzcolcpsaahcfnshkhtehytclmnteatmoteadtlwynnftloamtaaddyoyadlncsghykaeykaeykaycybthlvytstaadmhtaaddloxaxhdclaxhhsnhdrpftdwuocntilydibehnecmovdfekpjkclcslasbhkpawsaddmcmmnahnyaahdcxlotedtndfymyltclhlmtpfsadscnhtztaolbnnkistaedegwfmmedreetnwmcycnamtaaddyoyadlfcsdpykaycyemrewytytaadmhtaadmetaaddloxaxhdclaxdwkswmztpytnswtsecnblfbayajkdldeclqzzolrsnhljedsgminetytbnahatbyaahdcxkkguwsvyimjkvwteytwztyswvendtpmncpasfrrylprnhtkblndrgrmkoyjtbkrpamtaaddyoyadlocsdyykaeykaeykadykaycyhkrpnddrtaadmetaaddloxaxhdclaohnhffmvsbndslrfgclpfjejyatbdpebacnzokotofxntaoemvskpaowmryfnotfgaahdcxdlnbvecentssfsssgylnhkrstoytecrdlyadrekirfaybglahltalsrfcaeerobwamtaaddyoyadlocsdyykaeykaeykaoykaycyhkrpnddrgdaogykb',
+    );
+  });
+
+  it('test construct 2', () => {
+    const mnemonic =
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+    const seed = mnemonicToSeedSync(mnemonic);
+    const rootKey = bitcoin.bip32.fromSeed(seed);
+    const masterFingerprint = rootKey.fingerprint;
+    const p2wsh_key = rootKey.derivePath("48'/0'/0'/2'");
+    const _parentFingerprint = p2wsh_key.parentFingerprint;
+    const parentFingerprint = Buffer.alloc(4);
+    parentFingerprint.writeUInt32BE(_parentFingerprint);
+    const cryptoAccount = new CryptoAccount(masterFingerprint, [
+      new CryptoOutput(
+        [ScriptExpressions.WITNESS_SCRIPT_HASH],
+        new CryptoHDKey({
+          isMaster: false,
+          key: p2wsh_key.publicKey,
+          chainCode: p2wsh_key.chainCode,
+          origin: new CryptoKeypath(
+            [
+              new PathComponent({ index: 48, hardened: true }),
+              new PathComponent({ index: 0, hardened: true }),
+              new PathComponent({ index: 0, hardened: true }),
+              new PathComponent({ index: 2, hardened: true }),
+            ],
+            masterFingerprint,
+            p2wsh_key.depth,
+          ),
+          parentFingerprint,
+        }),
+      ),
+    ]);
+    const ur = cryptoAccount.toUREncoder(2000).nextPart();
+    expect(ur).toBe(
+      'ur:crypto-account/oeadcyjksktnbkaolytaadmetaaddloxaxhdclaocyfrykzoylemtiwfinmuzcfguogabwasfrwmgudpihgwvturtalutdkplpuonedtaahdcxrknbstsgcmbkltbazerhfzpymhtiwkdegwwdcwhybtclchiokblffhsrkbdphgiaamtaaddyotadlocsdyykaeykaeykaoykaocyjksktnbkaxaaaycycewzmscmvlaabkzs',
     );
   });
 });
