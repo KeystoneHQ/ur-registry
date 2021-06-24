@@ -5,6 +5,7 @@ import {
   PathComponent,
 } from '../src';
 import { CryptoHDKey } from '../src';
+import * as BIP32 from "bip32";
 
 describe('CryptoHDKey', () => {
   it('test master key', () => {
@@ -86,4 +87,22 @@ describe('CryptoHDKey', () => {
       'ur:crypto-hdkey/onaxhdclaojlvoechgferkdpqdiabdrflawshlhdmdcemtfnlrctghchbdolvwsednvdztbgolaahdcxtottgostdkhfdahdlykkecbbweskrymwflvdylgerkloswtbrpfdbsticmwylklpahtaadehoyaoadamtaaddyoyadlecsdwykadykadykaewkadwkaycywlcscewfihbdaehn',
     );
   });
+
+  it('test it can generate m level derivation key', () => {
+    const extendedPublicKey = "xpub661MyMwAqRbcGrSy23RC9y3S1QS1TUFmwj64mpx6k2vFwz1vcS7BcToj4NoTsu1pjZHJnHxTsrKu2UHaKhRqRbHHhbjAN2ytU8hUpYgkaYq"
+
+    let node = BIP32.fromBase58(extendedPublicKey)
+
+    const hex = "A303582103AC3DF08EC59F6F1CDC55B3007F90F1A98435EC345C3CAC400EDE1DD533D75FA9045820E8145DB627E79188E14C1FD6C772998509961D358FE8ECF3D7CC43BB1D0F952006D90130A20180021A854BC782"
+    const originkeypath = new CryptoKeypath([], node.fingerprint);
+    const cryptoHDKey = new CryptoHDKey({
+      isMaster:false,
+      key: node.publicKey,
+      chainCode: node.chainCode,
+      origin: originkeypath
+    })
+    expect(cryptoHDKey.toCBOR().toString('hex')).toBe(hex.toLowerCase());
+    const ur = cryptoHDKey.toUREncoder(1000).nextPart();
+    expect(ur).toBe("ur:crypto-hdkey/otaxhdclaxpsfswtmnsknejlceuogoqdaelbmhwnptlrecwpeehhfnpsfzbauecatleotsheptaahdcxvsbbhlrpdivdmelovygscttbstjpnllpasmtcaecmyvswpwftssffxrkcabsmdcxamtaaddyoeadlaaocylpgrstlfiewtseje")
+  })
 });

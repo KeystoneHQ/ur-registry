@@ -16,7 +16,7 @@ export class CryptoKeypath extends RegistryItem {
   };
 
   constructor(
-    private components?: PathComponent[],
+    private components: PathComponent[] = [],
     private sourceFingerprint?: Buffer,
     private depth?: number,
   ) {
@@ -24,7 +24,6 @@ export class CryptoKeypath extends RegistryItem {
   }
 
   public getPath = () => {
-    if (!this.components) return undefined;
     if (this.components.length === 0) {
       return undefined;
     }
@@ -53,10 +52,7 @@ export class CryptoKeypath extends RegistryItem {
         }
         components.push(component.isHardened() ? true : false);
       });
-
-    if (components.length > 0) {
-      map[Keys.components] = components;
-    }
+    map[Keys.components] = components;
     if (this.sourceFingerprint) {
       map[Keys.source_fingerprint] = this.sourceFingerprint.readUInt32BE();
     }
