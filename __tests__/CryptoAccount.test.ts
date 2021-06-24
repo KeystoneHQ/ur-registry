@@ -5,7 +5,7 @@ import {
   PathComponent,
   ScriptExpressions,
   CryptoAccount,
-} from '../';
+} from '../src';
 
 import * as bitcoin from 'bitcoinjs-lib';
 import { mnemonicToSeedSync } from 'bip39';
