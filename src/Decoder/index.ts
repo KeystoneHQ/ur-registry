@@ -1,4 +1,4 @@
-import { URDecoder } from '@apocentre/bc-ur';
+import { URDecoder } from '@ngraveio/bc-ur';
 import {
   Bytes,
   CryptoAccount,

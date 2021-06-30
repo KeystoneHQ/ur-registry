@@ -1,6 +1,6 @@
 {
   "name": "@keystonehq/bc-ur-registry",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A JS implementation of Uniform Resources(UR) Registry specification from Blockchain Commons",
   "engines": {
     "node": ">= 14.16 <15"
@@ -67,7 +67,7 @@
   "author": "Soralit <soralitria@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@apocentre/bc-ur": "^1.1.0",
+    "@ngraveio/bc-ur": "^1.1.5",
     "tslib": "~2.2.0"
   },
   "volta": {

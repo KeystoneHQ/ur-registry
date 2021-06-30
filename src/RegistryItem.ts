@@ -1,4 +1,4 @@
-import { UR, UREncoder } from '@apocentre/bc-ur';
+import { UR, UREncoder } from '@ngraveio/bc-ur';
 import { encodeDataItem } from './lib/cbor-sync';
 import { DataItem } from './lib/DataItem';
 import { RegistryType } from './RegistryType';

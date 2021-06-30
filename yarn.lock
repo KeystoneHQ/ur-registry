@@ -7,24 +7,6 @@
   resolved "https://registry.nlark.com/@apocentre/alias-sampling/download/@apocentre/alias-sampling-0.5.3.tgz#897ff181b48ad7b2bcb4ecf29400214888244f08"
   integrity sha1-iX/xgbSK17K8tOzylAAhSIgkTwg=
 
-"@apocentre/bc-ur@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.nlark.com/@apocentre/bc-ur/download/@apocentre/bc-ur-1.1.0.tgz#7c2d4b379d145ba0293df1c3169f716a73268887"
-  integrity sha1-fC1LN50UW6ApPfHDFp9xanMmiIc=
-  dependencies:
-    "@apocentre/alias-sampling" "^0.5.3"
-    "@ellipticoin/cbor" "^1.0.4"
-    "@iljucha/cbor" "^1.0.10"
-    "@types/crc" "^3.4.0"
-    "@types/sha.js" "^2.4.0"
-    assert "^2.0.0"
-    big-integer "^1.6.48"
-    bignumber.js "^9.0.1"
-    cbor-sync "^1.0.4"
-    cborg "^1.0.4"
-    crc "^3.8.0"
-    sha.js "^2.4.11"
-
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.nlark.com/@babel/code-frame/download/@babel/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
@@ -955,13 +937,6 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.3.tgz#90420f9f9c6d3987f176a19a7d8e764271a2f55d"
   integrity sha512-Fxt+AfXgjMoin2maPIYzFZnQjAXjAL0PHscM5pRTtatFqB+vZxAM9tLp2Optnuw3QOQC40jTNeGYFOMvyf7v9g==
 
-"@ellipticoin/cbor@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.nlark.com/@ellipticoin/cbor/download/@ellipticoin/cbor-1.0.4.tgz#de5c5eb2aba9cee93a0a944fae2258171e231dd5"
-  integrity sha1-3lxesqupzuk6CpRPriJYFx4jHdU=
-  dependencies:
-    bigint-buffer "^1.1.5"
-
 "@eslint/eslintrc@^0.4.1":
   version "0.4.1"
   resolved "https://registry.nlark.com/@eslint/eslintrc/download/@eslint/eslintrc-0.4.1.tgz?cache=0&sync_timestamp=1620433726531&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40eslint%2Feslintrc%2Fdownload%2F%40eslint%2Feslintrc-0.4.1.tgz#442763b88cecbe3ee0ec7ca6d6dd6168550cbf14"
@@ -976,11 +951,6 @@
     js-yaml "^3.13.1"
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
-
-"@iljucha/cbor@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.nlark.com/@iljucha/cbor/download/@iljucha/cbor-1.0.10.tgz#eb8f1cec52b1d7eacd21c721d31e441e87e36696"
-  integrity sha1-648c7FKx1+rNIcch0x5EHofjZpY=
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -1168,6 +1138,21 @@
     "@types/node" "*"
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
+
+"@ngraveio/bc-ur@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.nlark.com/@ngraveio/bc-ur/download/@ngraveio/bc-ur-1.1.5.tgz#4dc7dc550c5c6eb4a331ead090f9f819731c4fcc"
+  integrity sha1-TcfcVQxcbrSjMerQkPn4GXMcT8w=
+  dependencies:
+    "@apocentre/alias-sampling" "^0.5.3"
+    "@types/crc" "^3.4.0"
+    "@types/sha.js" "^2.4.0"
+    assert "^2.0.0"
+    bignumber.js "^9.0.1"
+    cbor-sync "^1.0.4"
+    crc "^3.8.0"
+    jsbi "^3.1.5"
+    sha.js "^2.4.11"
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
@@ -1999,22 +1984,10 @@ bech32@^1.1.2:
   resolved "https://registry.npm.taobao.org/bech32/download/bech32-1.1.4.tgz#e38c9f37bf179b8eb16ae3a772b40c356d4832e9"
   integrity sha1-44yfN78Xm46xauOncrQMNW1IMuk=
 
-big-integer@^1.6.48:
-  version "1.6.48"
-  resolved "https://registry.nlark.com/big-integer/download/big-integer-1.6.48.tgz#8fd88bd1632cba4a1c8c3e3d7159f08bb95b4b9e"
-  integrity sha1-j9iL0WMsukocjD49cVnwi7lbS54=
-
 big.js@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
-
-bigint-buffer@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.nlark.com/bigint-buffer/download/bigint-buffer-1.1.5.tgz#d038f31c8e4534c1f8d0015209bf34b4fa6dd442"
-  integrity sha1-0DjzHI5FNMH40AFSCb80tPpt1EI=
-  dependencies:
-    bindings "^1.3.0"
 
 bignumber.js@^9.0.1:
   version "9.0.1"
@@ -2385,11 +2358,6 @@ cbor-sync@^1.0.4:
   version "1.0.4"
   resolved "https://registry.nlark.com/cbor-sync/download/cbor-sync-1.0.4.tgz#5a11a1ab75c2a14d1af1b237fd84aa8c1593662f"
   integrity sha1-WhGhq3XCoU0a8bI3/YSqjBWTZi8=
-
-cborg@^1.0.4:
-  version "1.3.1"
-  resolved "https://registry.nlark.com/cborg/download/cborg-1.3.1.tgz#7f8ac75bd09eec60bc6720e9d7cebbdcaa806e4c"
-  integrity sha1-f4rHW9Ce7GC8ZyDp18673KqAbkw=
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -4529,6 +4497,11 @@ js-yaml@^3.13.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+jsbi@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.nlark.com/jsbi/download/jsbi-3.1.5.tgz#70c2aaa2f75e1dc7604fed45298061ca23724046"
+  integrity sha1-cMKqovdeHcdgT+1FKYBhyiNyQEY=
 
 jsdom@^16.4.0:
   version "16.6.0"
