@@ -20,7 +20,7 @@ export enum DataType {
 }
 
 type signRequestProps = {
-    requestId?: string,
+    requestId?: Buffer,
     signData: Buffer,
     dataType: DataType,
     chainId: number,
@@ -29,7 +29,7 @@ type signRequestProps = {
 }
 
 export class EthSignRequest extends RegistryItem {
-    private requestId: string;
+    private requestId: Buffer;
     private signData: Buffer;
     private dataType: DataType;
     private chainId: number;
@@ -63,7 +63,7 @@ export class EthSignRequest extends RegistryItem {
     public toDataItem = () => {
         const map = {};
         if (this.requestId) {
-            map[Keys.requestId] = this.requestId
+            map[Keys.requestId] = new DataItem(this.requestId, RegistryTypes.UUID.getTag())
         }
         if (this.address) {
             map[Keys.address] = this.address
@@ -87,7 +87,7 @@ export class EthSignRequest extends RegistryItem {
         const chainId = map[Keys.chainId];
         const derivationPath = CryptoKeypath.fromDataItem(map[Keys.derivationPath])
         const address = map[Keys.address] ? map[Keys.address] : undefined;
-        const requestId = map[Keys.requestId] ? map[Keys.requestId] : undefined;
+        const requestId = map[Keys.requestId] ? map[Keys.requestId].getData() : undefined;
 
         return new EthSignRequest({
             requestId,
