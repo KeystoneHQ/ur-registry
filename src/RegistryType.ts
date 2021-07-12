@@ -16,4 +16,6 @@ export const RegistryTypes = {
   CRYPTO_OUTPUT: new RegistryType('crypto-output', 308),
   CRYPTO_PSBT: new RegistryType('crypto-psbt', 310),
   CRYPTO_ACCOUNT: new RegistryType('crypto-account', 311),
+  // self-defined type
+  ETH_SIGN_REQUEST: new RegistryType('eth-sign-request', 401)
 };
