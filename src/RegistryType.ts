@@ -8,6 +8,7 @@ export class RegistryType {
 }
 
 export const RegistryTypes = {
+  UUID: new RegistryType('uuid', 37),
   BYTES: new RegistryType('bytes', undefined),
   CRYPTO_HDKEY: new RegistryType('crypto-hdkey', 303),
   CRYPTO_KEYPATH: new RegistryType('crypto-keypath', 304),
@@ -16,4 +17,7 @@ export const RegistryTypes = {
   CRYPTO_OUTPUT: new RegistryType('crypto-output', 308),
   CRYPTO_PSBT: new RegistryType('crypto-psbt', 310),
   CRYPTO_ACCOUNT: new RegistryType('crypto-account', 311),
+  // self-defined type
+  ETH_SIGN_REQUEST: new RegistryType('eth-sign-request', 401),
+  ETH_SIGNATAURE: new RegistryType('eth-signature', 402)
 };
