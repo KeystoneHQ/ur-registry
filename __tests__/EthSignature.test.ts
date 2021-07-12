@@ -1,6 +1,5 @@
-import {ETHSignature} from '../src/EthSignature';
+import {ETHSignature} from '../src/selfDefined';
 import * as uuid from 'uuid'
-import { EthSignRequest } from '../src/EthSignRequest';
 
 describe('eth-sign-request', () => {
     it('test should genereate eth-signature', () => {

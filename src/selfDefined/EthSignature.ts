@@ -1,7 +1,7 @@
-import { decodeToDataItem } from './lib/cbor-sync';
-import { DataItem } from './lib/DataItem';
-import { RegistryItem } from './RegistryItem';
-import { RegistryTypes } from './RegistryType';
+import { decodeToDataItem } from '../lib/cbor-sync';
+import { DataItem } from '../lib/DataItem';
+import { RegistryItem } from '../RegistryItem';
+import { RegistryTypes } from '../RegistryType';
 
 enum Keys {
     requestId = 1,

@@ -1,4 +1,4 @@
-import { EthSignRequest, DataType } from '../src/EthSignRequest';
+import { EthSignRequest, DataType } from '../src/selfDefined';
 import { CryptoKeypath, PathComponent } from '../src'
 import * as uuid from 'uuid'
 
