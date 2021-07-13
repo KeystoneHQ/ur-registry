@@ -19,6 +19,9 @@ import { MultiKey } from './MultiKey';
 import { ScriptExpressions } from './ScriptExpression';
 import { PathComponent } from './PathComponent';
 
+import { RegistryItem } from './RegistryItem';
+import { RegistryTypes, RegistryType } from './RegistryType';
+
 const URlib = {
   URRegistryDecoder,
   Bytes,
@@ -34,6 +37,10 @@ const URlib = {
   MultiKey,
   ScriptExpressions,
   PathComponent,
+
+  RegistryTypes,
+  RegistryItem,
+  RegistryType,
 };
 
 export {
