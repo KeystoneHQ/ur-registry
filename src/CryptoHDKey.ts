@@ -1,7 +1,6 @@
 import { CryptoCoinInfo } from './CryptoCoinInfo';
 import { CryptoKeypath } from './CryptoKeypath';
-import { decodeToDataItem } from './lib/cbor-sync';
-import { DataItem } from './lib/DataItem';
+import { decodeToDataItem, DataItem } from './lib';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
 
