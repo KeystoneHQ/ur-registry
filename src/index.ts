@@ -27,10 +27,11 @@ import {
   addSemanticDecode,
   addSemanticEncode,
   addWriter,
-  DataItem,
   decodeToDataItem,
   encodeDataItem,
 } from './lib';
+
+export { DataItem } from './lib';
 
 import { patchTags } from './utils';
 
@@ -64,7 +65,6 @@ const extend = {
   RegistryItem,
   RegistryType,
 
-  DataItem,
   decodeToDataItem,
   encodeDataItem,
 
