@@ -1,10 +1,7 @@
 {
   "name": "@keystonehq/bc-ur-registry",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A JS implementation of Uniform Resources(UR) Registry specification from Blockchain Commons",
-  "engines": {
-    "node": ">= 14.16 <15"
-  },
   "publishConfig": {
     "access": "public"
   },
@@ -58,7 +55,7 @@
   },
   "scripts": {
     "start": "node dist/index.js",
-    "clean": "rimraf coverage build tmp",
+    "clean": "rimraf coverage build tmp dist",
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
     "lint": "eslint . --ext .ts,.tsx",
@@ -71,8 +68,5 @@
   "dependencies": {
     "@ngraveio/bc-ur": "^1.1.5",
     "tslib": "~2.2.0"
-  },
-  "volta": {
-    "node": "14.16.1"
   }
 }
