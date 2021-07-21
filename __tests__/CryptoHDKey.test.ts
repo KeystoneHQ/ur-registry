@@ -101,6 +101,7 @@ describe('CryptoHDKey', () => {
       chainCode: node.chainCode,
       origin: originkeypath
     })
+    expect(cryptoHDKey.getBip32Key()).toEqual(extendedPublicKey);
     expect(cryptoHDKey.toCBOR().toString('hex')).toBe(hex.toLowerCase());
     const ur = cryptoHDKey.toUREncoder(1000).nextPart();
     expect(ur).toBe("ur:crypto-hdkey/otaxhdclaxpsfswtmnsknejlceuogoqdaelbmhwnptlrecwpeehhfnpsfzbauecatleotsheptaahdcxvsbbhlrpdivdmelovygscttbstjpnllpasmtcaecmyvswpwftssffxrkcabsmdcxamtaaddyoeadlaaocylpgrstlfiewtseje")
