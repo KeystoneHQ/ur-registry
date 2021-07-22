@@ -83,9 +83,9 @@ export class CryptoHDKey extends RegistryItem {
       }
     }
     const depthBuffer = Buffer.alloc(1);
-    depthBuffer.writeUInt8(depth);
+    depthBuffer.writeUInt8(depth, 0);
     const indexBuffer = Buffer.alloc(4);
-    indexBuffer.writeUInt32BE(index);
+    indexBuffer.writeUInt32BE(index, 0);
     const chainCode = this.getChainCode();
     const key = this.getKey();
     return encode(Buffer.concat([version, depthBuffer, parentFingerprint, indexBuffer, chainCode, key]));
@@ -153,7 +153,7 @@ export class CryptoHDKey extends RegistryItem {
         map[Keys.children] = children;
       }
       if (this.parentFingerprint) {
-        map[Keys.parent_fingerprint] = this.parentFingerprint.readUInt32BE();
+        map[Keys.parent_fingerprint] = this.parentFingerprint.readUInt32BE(0);
       }
       if (this.name !== undefined) {
         map[Keys.name] = this.name;
@@ -184,7 +184,7 @@ export class CryptoHDKey extends RegistryItem {
     let parentFingerprint: Buffer;
     if (_parentFingerprint) {
       parentFingerprint = Buffer.alloc(4);
-      parentFingerprint.writeUInt32BE(_parentFingerprint);
+      parentFingerprint.writeUInt32BE(_parentFingerprint, 0);
     }
     const name = map[Keys.name];
     const note = map[Keys.note];

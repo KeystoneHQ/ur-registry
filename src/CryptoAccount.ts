@@ -26,7 +26,7 @@ export class CryptoAccount extends RegistryItem {
   public toDataItem = () => {
     const map = {};
     if (this.masterFingerprint) {
-      map[Keys.masterFingerprint] = this.masterFingerprint.readUInt32BE();
+      map[Keys.masterFingerprint] = this.masterFingerprint.readUInt32BE(0);
     }
     if (this.outputDescriptors) {
       map[Keys.outputDescriptors] = this.outputDescriptors.map((item) =>
@@ -41,7 +41,7 @@ export class CryptoAccount extends RegistryItem {
     const masterFingerprint = Buffer.alloc(4);
     const _masterFingerprint = map[Keys.masterFingerprint];
     if (_masterFingerprint) {
-      masterFingerprint.writeUInt32BE(_masterFingerprint);
+      masterFingerprint.writeUInt32BE(_masterFingerprint, 0);
     }
     const outputDescriptors = map[Keys.outputDescriptors] as DataItem[];
     const cryptoOutputs = outputDescriptors.map((item) =>
