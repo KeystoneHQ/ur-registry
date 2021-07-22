@@ -53,7 +53,7 @@ export class CryptoKeypath extends RegistryItem {
       });
     map[Keys.components] = components;
     if (this.sourceFingerprint) {
-      map[Keys.source_fingerprint] = this.sourceFingerprint.readUInt32BE();
+      map[Keys.source_fingerprint] = this.sourceFingerprint.readUInt32BE(0);
     }
     if (this.depth !== undefined) {
       map[Keys.depth] = this.depth;
@@ -82,7 +82,7 @@ export class CryptoKeypath extends RegistryItem {
     let sourceFingerprint: Buffer;
     if (_sourceFingerprint) {
       sourceFingerprint = Buffer.alloc(4);
-      sourceFingerprint.writeUInt32BE(_sourceFingerprint);
+      sourceFingerprint.writeUInt32BE(_sourceFingerprint, 0);
     }
     const depth = map[Keys.depth];
     return new CryptoKeypath(pathComponents, sourceFingerprint, depth);
