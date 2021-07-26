@@ -19,7 +19,6 @@ import { MultiKey } from './MultiKey';
 import { ScriptExpressions } from './ScriptExpression';
 import { PathComponent } from './PathComponent';
 
-import { RegistryItem } from './RegistryItem';
 import { RegistryTypes, RegistryType } from './RegistryType';
 
 import {
@@ -32,6 +31,7 @@ import {
 } from './lib';
 
 export { DataItem } from './lib';
+export { RegistryItem } from './RegistryItem';
 
 import { patchTags } from './utils';
 
@@ -62,12 +62,9 @@ const cbor = {
 
 const extend = {
   RegistryTypes,
-  RegistryItem,
   RegistryType,
-
   decodeToDataItem,
   encodeDataItem,
-
   cbor,
 };
 
