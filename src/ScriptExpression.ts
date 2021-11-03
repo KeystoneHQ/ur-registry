@@ -20,7 +20,7 @@ export const ScriptExpressions = {
   WITNESS_PUBLIC_KEY_HASH: new ScriptExpression(404, 'wpkh'),
   COMBO: new ScriptExpression(405, 'combo'),
   MULTISIG: new ScriptExpression(406, 'multi'),
-  SORTED_MULTISIG: new ScriptExpression(407, 'sorted'),
+  SORTED_MULTISIG: new ScriptExpression(407, 'sortedmulti'),
   ADDRESS: new ScriptExpression(307, 'addr'),
   RAW_SCRIPT: new ScriptExpression(408, 'raw'),
 };

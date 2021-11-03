@@ -44,6 +44,18 @@ export class CryptoOutput extends RegistryItem {
 
   public getScriptExpressions = () => this.scriptExpressions;
 
+  private _toOutputDescriptor = (seIndex: number) => {
+    if (seIndex >= this.scriptExpressions.length) {
+      return this.cryptoKey.getOutputDescriptorContent();
+    } else {
+      return `${this.scriptExpressions[seIndex].getExpression()}(${this._toOutputDescriptor(seIndex + 1)})`;
+    }
+  };
+
+  public toString = () => {
+    return this._toOutputDescriptor(0);
+  };
+
   toDataItem = () => {
     let dataItem = this.cryptoKey.toDataItem();
     if (
@@ -91,7 +103,7 @@ export class CryptoOutput extends RegistryItem {
       (scriptExpressions[seLength - 1].getExpression() ===
         ScriptExpressions.MULTISIG.getExpression() ||
         scriptExpressions[seLength - 1].getExpression() ===
-          ScriptExpressions.SORTED_MULTISIG.getExpression());
+        ScriptExpressions.SORTED_MULTISIG.getExpression());
     //TODO: judge is multi key by scriptExpressions
     if (isMultiKey) {
       const multiKey = MultiKey.fromDataItem(_dataItem);
