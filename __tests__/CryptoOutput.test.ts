@@ -7,6 +7,7 @@ import {
   PathComponent,
 } from '../src';
 import { ScriptExpressions } from '../src';
+
 describe('CryptoOutput', () => {
   it('test p2pkh eckey', () => {
     const hex =
@@ -20,6 +21,7 @@ describe('CryptoOutput', () => {
       '02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5',
     );
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    expect(cryptoOutput.toString()).toBe('pkh(02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5)');
     const ur = cryptoOutput.toUREncoder().nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmutaadeyoyaxhdclaoswaalbmwfpwekijndyfefzjtmdrtketphhktmngrlkwsfnospypsasrhhhjonnvwtsqzwljy',
@@ -39,6 +41,7 @@ describe('CryptoOutput', () => {
       'd90193d90132a103582102c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5',
     );
     const ur = cryptoOutput.toUREncoder().nextPart();
+    expect(cryptoOutput.toString()).toBe('pkh(02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5)');
     expect(ur).toBe(
       'ur:crypto-output/taadmutaadeyoyaxhdclaoswaalbmwfpwekijndyfefzjtmdrtketphhktmngrlkwsfnospypsasrhhhjonnvwtsqzwljy',
     );
@@ -55,6 +58,7 @@ describe('CryptoOutput', () => {
       '03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556',
     );
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    expect(cryptoOutput.toString()).toBe('sh(wpkh(03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556))');
     const ur = cryptoOutput.toUREncoder().nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmhtaadmwtaadeyoyaxhdclaxzmytkgtlkphywyoxcxfeftbbecgmectelfynfldllpisoyludlahknbbhndtkphfhlehmust',
@@ -75,6 +79,7 @@ describe('CryptoOutput', () => {
     });
     const cryptoOutput = new CryptoOutput(scriptExpressions, ecKey);
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    expect(cryptoOutput.toString()).toBe('sh(wpkh(03fff97bd5755eeea420453a14355235d382f6472f8568a18b2f057a1460297556))');
     const ur = cryptoOutput.toUREncoder().nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmhtaadmwtaadeyoyaxhdclaxzmytkgtlkphywyoxcxfeftbbecgmectelfynfldllpisoyludlahknbbhndtkphfhlehmust',
@@ -90,15 +95,16 @@ describe('CryptoOutput', () => {
     ]);
     expect(cryptoOutput.getHDKey()).toBeUndefined();
     expect(cryptoOutput.getMultiKey().getThreshold()).toBe(2);
-    const firstKey = cryptoOutput.getMultiKey().getEcKeys()[0];
+    const firstKey = cryptoOutput.getMultiKey().getKeys()[0] as CryptoECKey;
     expect(firstKey.getData().toString('hex')).toBe(
       '022f01e5e15cca351daff3843fb70f3c2f0a1bdd05e5af888a67784ef3e10a2a01',
     );
-    const secondKey = cryptoOutput.getMultiKey().getEcKeys()[1];
+    const secondKey = cryptoOutput.getMultiKey().getKeys()[1] as CryptoECKey;
     expect(secondKey.getData().toString('hex')).toBe(
       '03acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe',
     );
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    expect(cryptoOutput.toString()).toBe('sh(multi(2,022f01e5e15cca351daff3843fb70f3c2f0a1bdd05e5af888a67784ef3e10a2a01,03acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe))');
     const ur = cryptoOutput.toUREncoder().nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmhtaadmtoeadaoaolftaadeyoyaxhdclaodladvwvyhhsgeccapewflrfhrlbsfndlbkcwutahvwpeloleioksglwfvybkdradtaadeyoyaxhdclaxpstylrvowtstynguaspmchlenegonyryvtmsmtmsgshgvdbbsrhebybtztdisfrnpfadremh',
@@ -124,8 +130,9 @@ describe('CryptoOutput', () => {
         'hex',
       ),
     });
-    const multiKey = new MultiKey(2, [firstKey, secondKey], []);
+    const multiKey = new MultiKey(2, [firstKey, secondKey]);
     const cryptoOutput = new CryptoOutput(scriptExpressions, multiKey);
+    expect(cryptoOutput.toString()).toBe('sh(multi(2,022f01e5e15cca351daff3843fb70f3c2f0a1bdd05e5af888a67784ef3e10a2a01,03acd484e2f0c7f65309ad178a9f559abde09796974c57e714c35f110dfc27ccbe))');
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
     const ur = cryptoOutput.toUREncoder().nextPart();
     expect(ur).toBe(
@@ -146,7 +153,7 @@ describe('CryptoOutput', () => {
     expect(cryptoOutput.getHDKey().getChainCode().toString('hex')).toBe(
       '637807030d55d01f9a0cb3a7839515d796bd07706386a6eddf06cc29a65a0e29',
     );
-    expect(cryptoOutput.getHDKey().getOrigin().getPath()).toBe("44'/0'/0'");
+    expect(cryptoOutput.getHDKey().getOrigin().getPath()).toBe('44\'/0\'/0\'');
     expect(
       cryptoOutput
         .getHDKey()
@@ -162,6 +169,7 @@ describe('CryptoOutput', () => {
       cryptoOutput.getHDKey().getChildren().getSourceFingerprint(),
     ).toBeUndefined();
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    expect(cryptoOutput.toString()).toBe('pkh(d34db33f/44\'/0\'/0\'xpub6CY2xt3mvQejPFUw26CychtL4GMq1yp41aMW2U27mvThqefpZYwXpGscV26JuVj13Fpg4kgSENheUSbTqm5f8z25zrhXpPVss5zWeMGnAKR/1/*)');
     const ur = cryptoOutput.toUREncoder(1000).nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmutaaddlonaxhdclaotdqdinaeesjzmolfzsbbidlpiyhddlcximhltirfsptlvsmohscsamsgzoaxadwtaahdcxiaksataxbtgotictnybnqdoslsmdbztsmtryatjoialnolweuramsfdtolhtbadtamtaaddyoeadlncsdwykaeykaeykaocytegtqdfhattaaddyoyadlradwklawkaycyksfpdmftpyaaeelb',
@@ -202,6 +210,7 @@ describe('CryptoOutput', () => {
     const cryptoOutput = new CryptoOutput(scriptExpressions, hdkey);
 
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    expect(cryptoOutput.toString()).toBe('pkh(d34db33f/44\'/0\'/0\'xpub6CY2xt3mvQejPFUw26CychtL4GMq1yp41aMW2U27mvThqefpZYwXpGscV26JuVj13Fpg4kgSENheUSbTqm5f8z25zrhXpPVss5zWeMGnAKR/1/*)');
     const ur = cryptoOutput.toUREncoder(1000).nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmutaaddlonaxhdclaotdqdinaeesjzmolfzsbbidlpiyhddlcximhltirfsptlvsmohscsamsgzoaxadwtaahdcxiaksataxbtgotictnybnqdoslsmdbztsmtryatjoialnolweuramsfdtolhtbadtamtaaddyoeadlncsdwykaeykaeykaocytegtqdfhattaaddyoyadlradwklawkaycyksfpdmftpyaaeelb',
@@ -220,7 +229,7 @@ describe('CryptoOutput', () => {
 
     expect(cryptoOutput.getMultiKey().getThreshold()).toBe(1);
 
-    const firstKey = cryptoOutput.getMultiKey().getHdKeys()[0];
+    const firstKey = cryptoOutput.getMultiKey().getKeys()[0] as CryptoHDKey;
     expect(firstKey.getKey().toString('hex')).toBe(
       '03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7',
     );
@@ -233,7 +242,7 @@ describe('CryptoOutput', () => {
     expect(firstKey.getChildren().getPath()).toBe('1/0/*');
     expect(firstKey.getChildren().getSourceFingerprint()).toBeUndefined();
 
-    const secondKey = cryptoOutput.getMultiKey().getHdKeys()[1];
+    const secondKey = cryptoOutput.getMultiKey().getKeys()[1] as CryptoHDKey;
     expect(secondKey.getKey().toString('hex')).toBe(
       '02fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea',
     );
@@ -249,6 +258,7 @@ describe('CryptoOutput', () => {
     expect(secondKey.getChildren().getSourceFingerprint()).toBeUndefined();
 
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
+    expect(cryptoOutput.toString()).toBe('wsh(multi(1,xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/1/0/*,bd16bee5/0xpub67tVq9TC3jGc8hyd7kgmC1GK87PYAtgqFcAhJTgBP5VQ6d9RssQK1iwWk3ZY8cbrAuwmp31gShjmBoHKmKbEaQfAbppVSuDh1ojtymY92dh/0/0/*))');
     const ur = cryptoOutput.toUREncoder(1000).nextPart();
     expect(ur).toBe(
       'ur:crypto-output/taadmetaadmtoeadadaolftaaddloxaxhdclaxsbsgptsolkltkndsmskiaelfhhmdimcnmnlgutzotecpsfveylgrbdhptbpsveosaahdcxhnganelacwldjnlschnyfxjyplrllfdrplpswdnbuyctlpwyfmmhgsgtwsrymtldamtaaddyoeadlaaxaeattaaddyoyadlnadwkaewklawktaaddloxaxhdclaoztnnhtwtpslgndfnwpzedrlomnclchrdfsayntlplplojznslfjejecpptlgbgwdaahdcxwtmhnyzmpkkbvdpyvwutglbeahmktyuogusnjonththhdwpsfzvdfpdlcndlkensamtaaddyoeadlfaewkaocyrycmrnvwattaaddyoyadlnaewkaewklawktdbsfttn',
@@ -302,8 +312,9 @@ describe('CryptoOutput', () => {
         new PathComponent({ hardened: false }),
       ]),
     });
-    const multiKey = new MultiKey(1, [], [firstKey, secondKey]);
+    const multiKey = new MultiKey(1, [firstKey, secondKey]);
     const cryptoOutput = new CryptoOutput(scriptExpressions, multiKey);
+    expect(cryptoOutput.toString()).toBe('wsh(multi(1,xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB/1/0/*,bd16bee5/0xpub67tVq9TC3jGc8hyd7kgmC1GK87PYAtgqFcAhJTgBP5VQ6d9RssQK1iwWk3ZY8cbrAuwmp31gShjmBoHKmKbEaQfAbppVSuDh1ojtymY92dh/0/0/*))');
     expect(cryptoOutput.toCBOR().toString('hex')).toBe(hex);
     const ur = cryptoOutput.toUREncoder(1000).nextPart();
     expect(ur).toBe(

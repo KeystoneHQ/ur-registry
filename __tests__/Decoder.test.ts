@@ -76,7 +76,7 @@ describe('UR Registry Decoder', () => {
 
     expect(cryptoOutput.getMultiKey().getThreshold()).toBe(1);
 
-    const firstKey = cryptoOutput.getMultiKey().getHdKeys()[0];
+    const firstKey = cryptoOutput.getMultiKey().getKeys()[0] as CryptoHDKey;
     expect(firstKey.getKey().toString('hex')).toBe(
       '03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7',
     );
@@ -89,7 +89,7 @@ describe('UR Registry Decoder', () => {
     expect(firstKey.getChildren().getPath()).toBe('1/0/*');
     expect(firstKey.getChildren().getSourceFingerprint()).toBeUndefined();
 
-    const secondKey = cryptoOutput.getMultiKey().getHdKeys()[1];
+    const secondKey = cryptoOutput.getMultiKey().getKeys()[1] as CryptoHDKey;
     expect(secondKey.getKey().toString('hex')).toBe(
       '02fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea',
     );
@@ -149,6 +149,7 @@ describe('UR Registry Decoder', () => {
       cryptoOutput1.getHDKey().getParentFingerprint().toString('hex'),
     ).toBe('99f9cdf7');
     expect(cryptoOutput1.getHDKey().getChildren()).toBeUndefined();
+    expect(cryptoOutput1.toString()).toBe("pkh(xpub6CnQkivUEH9bSbWVWfDLCtigKKgnSWGaVSRyCbN2QNBJzuvHT1vUQpgSpY1NiVvoeNEuVwk748Cn9G3NtbQB1aGGsEL7aYEnjVWgjj9tefu)");
 
     const cryptoOutput2 = outputDescriptors[1];
     expect(cryptoOutput2.getScriptExpressions()).toStrictEqual([
@@ -166,6 +167,7 @@ describe('UR Registry Decoder', () => {
       cryptoOutput2.getHDKey().getParentFingerprint().toString('hex'),
     ).toBe('a80f7cdb');
     expect(cryptoOutput2.getHDKey().getChildren()).toBeUndefined();
+    expect(cryptoOutput2.toString()).toBe("sh(wpkh(xpub6CtR1iF4dZPkEyXDwVf3HE74tSwXNMcHtBzX4gwz2UnPhJ54Jz5unHx2syYCCDkvVUmsmoYTmcaHXe1wJppvct4GMMaN5XAbRk7yGScRSte))");
 
     const cryptoOutput3 = outputDescriptors[2];
     expect(cryptoOutput3.getScriptExpressions()).toStrictEqual([
@@ -182,6 +184,7 @@ describe('UR Registry Decoder', () => {
       cryptoOutput3.getHDKey().getParentFingerprint().toString('hex'),
     ).toBe('0d5de1d7');
     expect(cryptoOutput3.getHDKey().getChildren()).toBeUndefined();
+    expect(cryptoOutput3.toString()).toBe("wpkh(xpub6BkU445MSEBXbPjD3g2c2ch6mn8yy1SXXQUM7EwjgYiq6Wt1NDwDZ45npqWcV8uQC5oi2gHuVukoCoZZyT4HKq8EpotPMqGqxdZRuapCQ23)");
 
     const cryptoOutput4 = outputDescriptors[3];
     expect(cryptoOutput4.getScriptExpressions()).toStrictEqual([
@@ -198,6 +201,7 @@ describe('UR Registry Decoder', () => {
       cryptoOutput4.getHDKey().getParentFingerprint().toString('hex'),
     ).toBe('37b5eed4');
     expect(cryptoOutput4.getHDKey().getChildren()).toBeUndefined();
+    expect(cryptoOutput4.toString()).toBe("sh(xpub68JFLJTH96GUqC6SoVw5c2qyLSt776PGu5xde8ddVACuPYyarvSL827TbZGavuNbKQ8DG3VP9fCXPhQRBgPrS4MPG3zaZgwAGuPHYvVuY9X)");
 
     const cryptoOutput5 = outputDescriptors[4];
     expect(cryptoOutput5.getScriptExpressions()).toStrictEqual([
@@ -215,6 +219,7 @@ describe('UR Registry Decoder', () => {
       cryptoOutput5.getHDKey().getParentFingerprint().toString('hex'),
     ).toBe('59b69b2a');
     expect(cryptoOutput5.getHDKey().getChildren()).toBeUndefined();
+    expect(cryptoOutput5.toString()).toBe("sh(wsh(xpub6EC9f7mLFJQoPaqDJ72Zbv67JWzmpXvCYQSecER9GzkYy5eWLsVLbHnxoAZ8NnnsrjhMLduJo9dG6fNQkmMFL3Qedj2kf5bEy5tptHPApNf))");
 
     const cryptoOutput6 = outputDescriptors[5];
     expect(cryptoOutput6.getScriptExpressions()).toStrictEqual([
@@ -231,6 +236,7 @@ describe('UR Registry Decoder', () => {
       cryptoOutput6.getHDKey().getParentFingerprint().toString('hex'),
     ).toBe('59b69b2a');
     expect(cryptoOutput6.getHDKey().getChildren()).toBeUndefined();
+    expect(cryptoOutput6.toString()).toBe("wsh(xpub6EC9f7mLFJQoRQ6qiTvWQeeYsgtki6fBzSUgWgUtAujEMtAfJSAn3AVS4KrLHRV2hNX77YwNkg4azUzuSwhNGtcq4r2J8bLGMDkrQYHvoed)");
 
     expect(cryptoAccount.toCBOR().toString('hex')).toBe(hex.toLowerCase());
   });

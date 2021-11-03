@@ -4,6 +4,7 @@ import { CryptoKeypath } from './CryptoKeypath';
 import { decodeToDataItem, DataItem } from './lib';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
+import { ICryptoKey } from './interfaces';
 
 enum Keys {
   is_master = 1,
@@ -36,7 +37,8 @@ type DeriveKeyProps = {
   name?: string;
   note?: string;
 };
-export class CryptoHDKey extends RegistryItem {
+
+export class CryptoHDKey extends RegistryItem implements ICryptoKey {
   private master: boolean;
   private privateKey: boolean;
   private key: Buffer;
@@ -47,6 +49,10 @@ export class CryptoHDKey extends RegistryItem {
   private parentFingerprint: Buffer;
   private name: string;
   private note: string;
+
+  isECKey = () => {
+    return false;
+  };
 
   public getKey = () => this.key;
   public getChainCode = () => this.chainCode;
@@ -63,20 +69,22 @@ export class CryptoHDKey extends RegistryItem {
     let depth: number;
     let index: number;
     let parentFingerprint: Buffer = Buffer.alloc(4).fill(0);
-    if(this.isMaster()) {
+    if (this.isMaster()) {
       // version bytes defined on https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#serialization-format
-      version = Buffer.from("0488ADE4", "hex")
+      version = Buffer.from('0488ADE4', 'hex');
       depth = 0;
       index = 0;
     } else {
       depth = this.getOrigin().getComponents().length || this.getOrigin().getDepth();
       const paths = this.getOrigin().getComponents();
       const lastPath = paths[paths.length - 1];
-      if(lastPath) {
+      if (lastPath) {
         index = lastPath.isHardened() ? lastPath.getIndex()! + 0x80000000 : lastPath.getIndex()!;
-        parentFingerprint = this.getParentFingerprint();
+        if (this.getParentFingerprint()) {
+          parentFingerprint = this.getParentFingerprint();
+        }
       }
-      if(this.isPrivateKey()) {
+      if (this.isPrivateKey()) {
         version = Buffer.from('0488ADE4', 'hex');
       } else {
         version = Buffer.from('0488B21E', 'hex');
@@ -89,10 +97,26 @@ export class CryptoHDKey extends RegistryItem {
     const chainCode = this.getChainCode();
     const key = this.getKey();
     return encode(Buffer.concat([version, depthBuffer, parentFingerprint, indexBuffer, chainCode, key]));
-  }
+  };
 
   public getRegistryType = () => {
     return RegistryTypes.CRYPTO_HDKEY;
+  };
+
+  public getOutputDescriptorContent = () => {
+    let result = '';
+    if (this.getOrigin()) {
+      if (this.getOrigin().getSourceFingerprint() && this.getOrigin().getPath()) {
+        result += `${this.getOrigin().getSourceFingerprint().toString('hex')}/${this.getOrigin().getPath()}`;
+      }
+    }
+    result += this.getBip32Key();
+    if (this.getChildren()) {
+      if (this.getChildren().getPath()) {
+        result += `/${this.getChildren().getPath()}`;
+      }
+    }
+    return result;
   };
 
   constructor(args: DeriveKeyProps | MasterKeyProps) {

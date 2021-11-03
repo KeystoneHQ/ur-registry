@@ -14,20 +14,18 @@ export class MultiKey extends RegistryItem {
 
   constructor(
     private threshold: number,
-    private ecKeys: CryptoECKey[],
-    private hdKeys: CryptoHDKey[],
+    private keys: (CryptoECKey | CryptoHDKey)[],
   ) {
     super();
   }
 
   getThreshold = () => this.threshold;
-  getEcKeys = () => this.ecKeys as CryptoECKey[];
-  getHdKeys = () => this.hdKeys as CryptoHDKey[];
+  getKeys = () => this.keys;
 
   toDataItem = () => {
     const map = {};
     map[Keys.threshold] = this.threshold;
-    const keys: DataItem[] = [...this.ecKeys, ...this.hdKeys].map((k) => {
+    const keys: DataItem[] = this.keys.map((k) => {
       const dataItem = k.toDataItem();
       dataItem.setTag(k.getRegistryType().getTag());
       return dataItem;
@@ -36,19 +34,24 @@ export class MultiKey extends RegistryItem {
     return new DataItem(map);
   };
 
+  getOutputDescriptorContent = () => {
+    return [this.getThreshold(),
+      this.keys.map(k => k.getOutputDescriptorContent()).join(','),
+    ].join(',');
+  };
+
   static fromDataItem = (dataItem: DataItem) => {
     const map = dataItem.getData();
     const threshold = map[Keys.threshold];
-    const keys = map[Keys.keys] as DataItem[];
-    const ecKeys = [];
-    const hdKeys = [];
-    keys.forEach((k) => {
+    const _keys = map[Keys.keys] as DataItem[];
+    const keys = [];
+    _keys.forEach((k) => {
       if (k.getTag() === RegistryTypes.CRYPTO_HDKEY.getTag()) {
-        hdKeys.push(CryptoHDKey.fromDataItem(k));
+        keys.push(CryptoHDKey.fromDataItem(k));
       } else if (k.getTag() === RegistryTypes.CRYPTO_ECKEY.getTag()) {
-        ecKeys.push(CryptoECKey.fromDataItem(k));
+        keys.push(CryptoECKey.fromDataItem(k));
       }
     });
-    return new MultiKey(threshold, ecKeys, hdKeys);
+    return new MultiKey(threshold, keys);
   };
 }
