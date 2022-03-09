@@ -453,8 +453,6 @@
         semanticDecoders[tag] = fn;
         return this;
       },
-      Reader: Reader,
-      Writer: Writer,
     };
 
     /** Node.js Buffers **/
