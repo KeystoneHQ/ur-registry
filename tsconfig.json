@@ -3,8 +3,6 @@
     "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
-    "noEmit": true,
-    "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "importHelpers": true,
