@@ -1,6 +1,6 @@
 {
   "name": "@keystonehq/bc-ur-registry",
-  "version": "0.5.0-alpha.1",
+  "version": "0.5.0-alpha.2",
   "description": "A JS implementation of Uniform Resources(UR) Registry specification from Blockchain Commons",
   "publishConfig": {
     "access": "public"
