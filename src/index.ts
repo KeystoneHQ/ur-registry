@@ -90,5 +90,21 @@ export {
 };
 
 export * from './errors';
+export * from './Decoder';
+export * from './lib';
+export * from './CryptoAccount'
+export * from './CryptoPSBT'
+export * from './CryptoHDKey'
+export * from './CryptoOutput'
+export * from './CryptoCoinInfo'
+export * from './CryptoECKey'
+export * from './MultiKey'
+export * from './CryptoKeypath'
+export * from './patchCBOR'
+export * from './PathComponent'
+export * from './RegistryItem'
+export * from './RegistryType'
+export * from './types'
+export * from './utils'
 
 export default URlib;
