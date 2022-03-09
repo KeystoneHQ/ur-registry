@@ -89,4 +89,6 @@ export {
   extend,
 };
 
+export * from './errors';
+
 export default URlib;

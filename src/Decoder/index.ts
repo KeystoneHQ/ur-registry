@@ -10,6 +10,7 @@ import {
   CryptoPSBT,
 } from '..';
 import { RegistryTypes } from '../RegistryType';
+import { UnknownURTypeError } from '../errors';
 
 export class URRegistryDecoder extends URDecoder {
   public resultRegistryType = () => {
@@ -32,7 +33,7 @@ export class URRegistryDecoder extends URDecoder {
       case RegistryTypes.CRYPTO_ACCOUNT.getType():
         return CryptoAccount.fromCBOR(ur.cbor);
       default:
-        throw new Error(
+        throw new UnknownURTypeError(
           `#[ur-registry][Decoder][fn.resultRegistryType]: registry type ${ur.type} is not supported now`,
         );
     }

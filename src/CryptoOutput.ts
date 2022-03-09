@@ -44,7 +44,7 @@ export class CryptoOutput extends RegistryItem {
 
   public getScriptExpressions = () => this.scriptExpressions;
 
-  private _toOutputDescriptor = (seIndex: number) => {
+  private _toOutputDescriptor = (seIndex: number): string => {
     if (seIndex >= this.scriptExpressions.length) {
       return this.cryptoKey.getOutputDescriptorContent();
     } else {
@@ -82,9 +82,10 @@ export class CryptoOutput extends RegistryItem {
   public static fromDataItem = (dataItem: DataItem) => {
     const scriptExpressions: ScriptExpression[] = [];
     let _dataItem = dataItem;
+    // eslint-disable-next-line no-constant-condition
     while (true) {
-      let _tag = _dataItem.getTag() || undefined;
-      const se = ScriptExpression.fromTag(_tag);
+      let _tag = _dataItem.getTag();
+      const se = ScriptExpression.fromTag(_tag as number);
       if (se) {
         scriptExpressions.push(se);
         if (_dataItem.getData() instanceof DataItem) {

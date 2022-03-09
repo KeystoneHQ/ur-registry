@@ -1,6 +1,7 @@
 import { decodeToDataItem, DataItem } from './lib';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
+import { DataItemMap } from './types';
 
 enum Keys {
   type = '1',
@@ -34,7 +35,7 @@ export class CryptoCoinInfo extends RegistryItem {
   };
 
   public toDataItem = () => {
-    const map = {};
+    const map: DataItemMap = {};
     if (this.type) {
       map[Keys.type] = this.type;
     }

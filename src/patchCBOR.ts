@@ -8,4 +8,4 @@ const registryTags = Object.values(RegistryTypes)
 const scriptExpressionTags = Object.values(ScriptExpressions).map((se) =>
   se.getTag(),
 );
-patchTags(registryTags.concat(scriptExpressionTags));
+patchTags(registryTags.concat(scriptExpressionTags) as number[]);

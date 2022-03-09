@@ -3,6 +3,7 @@ import { CryptoHDKey } from './CryptoHDKey';
 import { DataItem } from './lib/DataItem';
 import { RegistryItem } from './RegistryItem';
 import { RegistryType, RegistryTypes } from './RegistryType';
+import { DataItemMap } from './types';
 
 enum Keys {
   threshold = 1,
@@ -10,6 +11,8 @@ enum Keys {
 }
 
 export class MultiKey extends RegistryItem {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   getRegistryType: () => RegistryType;
 
   constructor(
@@ -23,7 +26,7 @@ export class MultiKey extends RegistryItem {
   getKeys = () => this.keys;
 
   toDataItem = () => {
-    const map = {};
+    const map: DataItemMap = {};
     map[Keys.threshold] = this.threshold;
     const keys: DataItem[] = this.keys.map((k) => {
       const dataItem = k.toDataItem();
@@ -44,7 +47,7 @@ export class MultiKey extends RegistryItem {
     const map = dataItem.getData();
     const threshold = map[Keys.threshold];
     const _keys = map[Keys.keys] as DataItem[];
-    const keys = [];
+    const keys: (CryptoECKey | CryptoHDKey)[] = [];
     _keys.forEach((k) => {
       if (k.getTag() === RegistryTypes.CRYPTO_HDKEY.getTag()) {
         keys.push(CryptoHDKey.fromDataItem(k));

@@ -2,6 +2,7 @@ import { decodeToDataItem, DataItem } from './lib';
 import { PathComponent } from './PathComponent';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
+import { DataItemMap } from './types';
 
 enum Keys {
   components = 1,
@@ -40,16 +41,16 @@ export class CryptoKeypath extends RegistryItem {
   public getDepth = () => this.depth;
 
   toDataItem = () => {
-    const map: Record<string, any> = {};
-    const components = [];
+    const map: DataItemMap = {};
+    const components: (number | boolean | any[])[] = [];
     this.components &&
       this.components.forEach((component) => {
         if (component.isWildcard()) {
           components.push([]);
         } else {
-          components.push(component.getIndex());
+          components.push(component.getIndex() as number);
         }
-        components.push(component.isHardened() ? true : false);
+        components.push(component.isHardened());
       });
     map[Keys.components] = components;
     if (this.sourceFingerprint) {
@@ -79,7 +80,7 @@ export class CryptoKeypath extends RegistryItem {
       }
     }
     const _sourceFingerprint = map[Keys.source_fingerprint];
-    let sourceFingerprint: Buffer;
+    let sourceFingerprint: Buffer | undefined;
     if (_sourceFingerprint) {
       sourceFingerprint = Buffer.alloc(4);
       sourceFingerprint.writeUInt32BE(_sourceFingerprint, 0);
