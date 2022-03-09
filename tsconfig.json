@@ -5,7 +5,6 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "declaration": true,
     "importHelpers": true,
     "strict": true,
     "sourceMap": true,
@@ -16,7 +15,6 @@
     "noImplicitOverride": true,
     "strictNullChecks": false,
     "removeComments": true,
-    "declarationMap": true,
     "outDir": "./dist"
   },
   "include": ["src/**/*"]
