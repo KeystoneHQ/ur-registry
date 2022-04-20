@@ -52,7 +52,7 @@ export class CryptoOutput extends RegistryItem {
     }
   };
 
-  public toString = () => {
+  public override toString = () => {
     return this._toOutputDescriptor(0);
   };
 
