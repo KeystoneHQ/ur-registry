@@ -2,6 +2,7 @@ import { CryptoOutput } from '.';
 import { decodeToDataItem, DataItem } from './lib';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
+import { DataItemMap } from './types';
 
 enum Keys {
   masterFingerprint = 1,
@@ -24,7 +25,7 @@ export class CryptoAccount extends RegistryItem {
   public getOutputDescriptors = () => this.outputDescriptors;
 
   public toDataItem = () => {
-    const map = {};
+    const map: DataItemMap = {};
     if (this.masterFingerprint) {
       map[Keys.masterFingerprint] = this.masterFingerprint.readUInt32BE(0);
     }

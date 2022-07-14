@@ -1,7 +1,7 @@
 import { addSemanticDecode, addSemanticEncode, DataItem } from './lib';
 
-const alreadyPatchedTag = [];
-export const patchTags = (tags: number[]) => {
+const alreadyPatchedTag: number[] = [];
+export const patchTags = (tags: number[]): void => {
   tags.forEach((tag) => {
     if (alreadyPatchedTag.find((i) => i === tag)) return;
     addSemanticEncode(tag, (data: any) => {

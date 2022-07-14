@@ -1,7 +1,7 @@
 import { decodeToDataItem, DataItem } from './lib';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
-import {ICryptoKey} from './interfaces';
+import { DataItemMap, ICryptoKey } from './types';
 
 enum Keys {
   curve = 1,
@@ -11,13 +11,13 @@ enum Keys {
 
 export class CryptoECKey extends RegistryItem implements ICryptoKey {
   private data: Buffer;
-  private curve: number;
-  private privateKey: boolean;
+  private curve: number | undefined;
+  private privateKey: boolean | undefined;
   constructor(args: { data: Buffer; curve?: number; privateKey?: boolean }) {
     super();
     this.data = args.data;
     this.curve = args.curve;
-    this.privateKey = args.privateKey;
+    this.privateKey = args.privateKey || undefined;
   }
 
   isECKey = () => {
@@ -33,7 +33,7 @@ export class CryptoECKey extends RegistryItem implements ICryptoKey {
   };
 
   toDataItem = () => {
-    const map = {};
+    const map: DataItemMap = {};
     if (this.curve) {
       map[Keys.curve] = this.curve;
     }
