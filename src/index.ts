@@ -34,12 +34,14 @@ import {
 export { DataItem } from './lib';
 
 import { patchTags } from './utils';
+import {CryptoMultiAccounts} from "./extended/CryptoMultiAccounts";
 
 const URlib = {
   URRegistryDecoder,
   Bytes,
   CryptoAccount,
   CryptoHDKey,
+  CryptoMultiAccounts,
   CryptoKeypath,
   CryptoCoinInfo,
   CryptoCoinInfoType,
@@ -76,6 +78,7 @@ export {
   Bytes,
   CryptoAccount,
   CryptoHDKey,
+  CryptoMultiAccounts,
   CryptoKeypath,
   CryptoCoinInfo,
   CryptoCoinInfoType,
@@ -95,6 +98,7 @@ export * from './lib';
 export * from './CryptoAccount'
 export * from './CryptoPSBT'
 export * from './CryptoHDKey'
+export * from './extended/CryptoMultiAccounts'
 export * from './CryptoOutput'
 export * from './CryptoCoinInfo'
 export * from './CryptoECKey'
