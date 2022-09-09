@@ -14,6 +14,16 @@ To install, run:
 yarn add @keystonehq/bc-ur-registry
 ```
 
+To set up the project for development or creating your own builds, run:
+
+```bash
+yarn install
+yarn run build
+
+# This creates a single file web-version:
+yarn run build:purescript
+```
+
 ## Usage Samples:
 
 #### [CryptoOutput]Decode from cbor hex
