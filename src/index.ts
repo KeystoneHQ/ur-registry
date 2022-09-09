@@ -1,5 +1,5 @@
 import './patchCBOR';
-
+import { Buffer } from 'buffer/';
 import { CryptoHDKey } from './CryptoHDKey';
 import { CryptoKeypath } from './CryptoKeypath';
 import {
@@ -90,6 +90,7 @@ export {
   ScriptExpressions,
   PathComponent,
   extend,
+  Buffer
 };
 
 export * from './errors';
