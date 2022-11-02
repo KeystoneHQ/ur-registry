@@ -10,7 +10,7 @@
     "url": "https://github.com/KeystoneHQ/ur-registry"
   },
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
   "directories": {
     "lib": "src",
     "test": "__tests__"

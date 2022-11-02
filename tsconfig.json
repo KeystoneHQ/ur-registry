@@ -8,6 +8,7 @@
     "importHelpers": true,
     "strict": true,
     "sourceMap": true,
+    "declaration": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noImplicitAny": false,
