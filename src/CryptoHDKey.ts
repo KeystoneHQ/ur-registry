@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { encode } from 'bs58check';
 import { CryptoCoinInfo } from './CryptoCoinInfo';
 import { CryptoKeypath } from './CryptoKeypath';
