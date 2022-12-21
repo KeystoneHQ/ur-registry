@@ -578,7 +578,7 @@
 
     if (typeof Buffer === 'function') {
       api.addReader(function (data, format) {
-        if (data instanceof Buffer) {
+        if (Buffer.isBuffer(data)) {
           return new BufferReader(data);
         }
         if (format === 'hex' || format === 'base64') {
