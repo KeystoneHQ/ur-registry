@@ -18,4 +18,6 @@ export const RegistryTypes = {
   CRYPTO_PSBT: new RegistryType('crypto-psbt', 310),
   CRYPTO_ACCOUNT: new RegistryType('crypto-account', 311),
   CRYPTO_MULTI_ACCOUNTS: new RegistryType("crypto-multi-accounts", 1103),
+  QR_HARDWARE_CALL: new RegistryType("qr-hardware-call", 1201),
+  KEY_DERIVATION_CALL: new RegistryType("key-derivation-call", 1301),
 };
