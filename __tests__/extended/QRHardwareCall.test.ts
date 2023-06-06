@@ -1,14 +1,17 @@
-import {CryptoKeypath, PathComponent} from "../../src";
-import { QRHardwareCall, QRHardwareCallName } from "../../src/extended/QRHardwareCall";
-import { KeyDerivation } from "../../src/extended/KeyDerivation";
+import { CryptoKeypath, PathComponent } from '../../src';
+import { QRHardwareCall, QRHardwareCallType } from '../../src/extended/QRHardwareCall';
+import { KeyDerivation } from '../../src/extended/KeyDerivation';
+import { Curve, DerivationAlgorithm, KeyDerivationSchema } from '../../src/extended/DerivationSchema';
 
-describe("QRHardwareCall", () => {
-  it("should generate QRHardwareCall", () => {
+describe('QRHardwareCall', () => {
+  it('should generate QRHardwareCall', () => {
     const keyPath1 = new CryptoKeypath([
       new PathComponent({ index: 44, hardened: true }),
       new PathComponent({ index: 0, hardened: true }),
       new PathComponent({ index: 0, hardened: true }),
     ]);
+
+    const schema1 = new KeyDerivationSchema(keyPath1);
     const keyPath2 = new CryptoKeypath([
       new PathComponent({ index: 44, hardened: true }),
       new PathComponent({ index: 501, hardened: true }),
@@ -16,37 +19,39 @@ describe("QRHardwareCall", () => {
       new PathComponent({ index: 0, hardened: true }),
       new PathComponent({ index: 0, hardened: false }),
     ]);
+    const schema2 = new KeyDerivationSchema(keyPath2, Curve.ed25519);
 
-    const keyDerivation = new KeyDerivation([keyPath1, keyPath2]);
-    const qrHardwareCall = new QRHardwareCall(QRHardwareCallName.KeyDerivation, keyDerivation)
+    const keyDerivation = new KeyDerivation([schema1, schema2]);
+    const qrHardwareCall = new QRHardwareCall(QRHardwareCallType.KeyDerivation, keyDerivation);
 
-    const hex = qrHardwareCall.toCBOR().toString("hex");
+    const hex = qrHardwareCall.toCBOR().toString('hex');
     expect(hex).toBe(
-      "a2016e6b65792d64657269766174696f6e02d90515a30182d90130a10186182cf500f500f5d90130a1018a182cf51901f5f500f500f500f40269736563703235366b310366736c69703130"
+      'a2010002d90515a10182d90516a301d90130a10186182cf500f500f502000300d90516a301d90130a1018a182cf51901f5f500f500f500f402010300',
     );
 
     const ur = qrHardwareCall.toUREncoder(1000).nextPart();
     expect(ur).toBe(
-      "ur:qr-hardware-call/oeadjtjeihkkdpieihjpinkohsjyinjljtaotaahbzotadlftaaddyoyadlncsdwykaeykaeyktaaddyoyadlecsdwykcfadykykaeykaeykaewkaoinjkihiajoeyecenjeehaxiyjkjzinjoehdyfxvainnd"
+      'ur:qr-hardware-call/oeadaeaotaahbzoyadlftaahcmotadtaaddyoyadlncsdwykaeykaeykaoaeaxaetaahcmotadtaaddyoyadlecsdwykcfadykykaeykaeykaewkaoadaxaecnihhtjp',
     );
   });
 
-  it("should decode QRHardwareCall", () => {
+  it('should decode QRHardwareCall', () => {
     const hex =
-      "a2016e6b65792d64657269766174696f6e02d90515a30182d90130a10186182cf500f500f5d90130a1018a182cf51901f5f500f500f500f40269736563703235366b310366736c69703130";
+      'a2010002d90515a10182d90516a301d90130a10186182cf500f500f502000300d90516a301d90130a1018a182cf51901f5f500f500f500f402010300';
     const qrHardwareCall = QRHardwareCall.fromCBOR(
-      Buffer.from(hex, "hex")
+      Buffer.from(hex, 'hex'),
     );
-    expect(qrHardwareCall.getName()).toBe("key-derivation");
+    expect(qrHardwareCall.getType()).toBe(QRHardwareCallType.KeyDerivation);
 
     const keyDerivation = qrHardwareCall.getParams() as KeyDerivation;
-    expect(keyDerivation.getCurve()).toBe("secp256k1");
-    expect(keyDerivation.getAlgo()).toBe("slip10");
-    expect(keyDerivation.getKeypaths()[0].getPath()).toBe(
-      "44'/0'/0'"
+    const schemas = keyDerivation.getSchemas();
+    expect(schemas[0].getCurve()).toBe(Curve.secp256k1);
+    expect(schemas[0].getAlgo()).toBe(DerivationAlgorithm.slip10);
+    expect(schemas[0].getKeypath().getPath()).toBe(
+      '44\'/0\'/0\'',
     );
-    expect(keyDerivation.getKeypaths()[1].getPath()).toBe(
-      "44'/501'/0'/0'/0"
+    expect(schemas[1].getKeypath().getPath()).toBe(
+      '44\'/501\'/0\'/0\'/0',
     );
   });
 });
