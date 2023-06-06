@@ -1,16 +1,17 @@
-import {RegistryTypes} from "../RegistryType";
-import {RegistryItem} from "../RegistryItem";
-import {decodeToDataItem,DataItem} from '../lib';
-import {DataItemMap} from '../types';
-import { KeyDerivation } from "./KeyDerivation";
+import { RegistryTypes } from '../RegistryType';
+import { RegistryItem } from '../RegistryItem';
+import { decodeToDataItem, DataItem } from '../lib';
+import { DataItemMap } from '../types';
+import { KeyDerivation } from './KeyDerivation';
 
 enum Keys {
-  name = 1,
+  type = 1,
   params,
+  origin,
 }
 
-export enum QRHardwareCallName {
-  KeyDerivation = "key-derivation"
+export enum QRHardwareCallType {
+  KeyDerivation
 }
 
 type QRHardwareCallParams = KeyDerivation
@@ -19,36 +20,43 @@ export class QRHardwareCall extends RegistryItem {
   getRegistryType = () => RegistryTypes.QR_HARDWARE_CALL;
 
   constructor(
-    private name: QRHardwareCallName,
+    private type: QRHardwareCallType,
     private params: QRHardwareCallParams,
+    private origin?: string,
   ) {
     super();
   }
 
-  public getName = (): string => this.name;
+  public getType = (): number => this.type;
   public getParams = (): QRHardwareCallParams => this.params;
+  public getOrigin = (): string | undefined => this.origin;
 
   public toDataItem = (): DataItem => {
     const map: DataItemMap = {};
-    map[Keys.name] = this.name;
+    map[Keys.type] = this.type;
 
-    const param = this.params.toDataItem()
-    param.setTag(this.params.getRegistryType().getTag())
-    map[Keys.params] = param
+    const param = this.params.toDataItem();
+    param.setTag(this.params.getRegistryType().getTag());
+    map[Keys.params] = param;
+
+    if (this.origin) {
+      map[Keys.origin] = this.origin;
+    }
 
     return new DataItem(map);
   };
 
   public static fromDataItem = (dataItem: DataItem): QRHardwareCall => {
     const map = dataItem.getData();
-    const name = map[Keys.name] || QRHardwareCallName.KeyDerivation;
+    const type = map[Keys.type] || QRHardwareCallType.KeyDerivation;
     let params;
 
-    switch (name) {
-      case QRHardwareCallName.KeyDerivation:
-        params = KeyDerivation.fromDataItem(map[Keys.params])
+    switch (type) {
+      case QRHardwareCallType.KeyDerivation:
+        params = KeyDerivation.fromDataItem(map[Keys.params]);
     }
-    return new QRHardwareCall(name, params);
+    const origin = map[Keys.origin];
+    return new QRHardwareCall(type, params, origin);
   };
 
   public static fromCBOR = (_cborPayload: Buffer): QRHardwareCall => {
