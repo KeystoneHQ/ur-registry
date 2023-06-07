@@ -7,6 +7,7 @@ enum Keys {
   masterFingerprint = 1,
   keys,
   device,
+  deviceId,
 }
 
 export class CryptoMultiAccounts extends RegistryItem {
@@ -15,7 +16,8 @@ export class CryptoMultiAccounts extends RegistryItem {
   constructor(
     private masterFingerprint: Buffer,
     private keys: CryptoHDKey[],
-    private device?: string
+    private device?: string,
+    private deviceId?: string
   ) {
     super();
   }
@@ -23,6 +25,7 @@ export class CryptoMultiAccounts extends RegistryItem {
   public getMasterFingerprint = () => this.masterFingerprint;
   public getKeys = () => this.keys;
   public getDevice = () => this.device;
+  public getDeviceId = () => this.deviceId;
 
   public toDataItem = (): DataItem => {
     const map: DataItemMap = {};
@@ -39,6 +42,9 @@ export class CryptoMultiAccounts extends RegistryItem {
     if (this.device) {
       map[Keys.device] = this.device;
     }
+    if (this.deviceId) {
+      map[Keys.deviceId] = this.deviceId;
+    }
     return new DataItem(map);
   };
 
@@ -52,7 +58,8 @@ export class CryptoMultiAccounts extends RegistryItem {
     const keys = map[Keys.keys] as DataItem[];
     const cryptoHDKeys = keys.map((item) => CryptoHDKey.fromDataItem(item));
     const device = map[Keys.device];
-    return new CryptoMultiAccounts(masterFingerprint, cryptoHDKeys, device);
+    const deviceId = map[Keys.deviceId];
+    return new CryptoMultiAccounts(masterFingerprint, cryptoHDKeys, device, deviceId);
   };
 
   public static fromCBOR = (_cborPayload: Buffer) => {
