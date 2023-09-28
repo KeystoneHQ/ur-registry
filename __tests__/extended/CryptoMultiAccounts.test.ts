@@ -23,21 +23,22 @@ describe("CryptoMultiAccount", () => {
       Buffer.from("e9181cf3", "hex"),
       [cryptoHDKey],
       "keystone",
-      "28475c8d80f6c06bafbe46a7d1750f3fcf2565f7"
+      "28475c8d80f6c06bafbe46a7d1750f3fcf2565f7",
+      "1.0.2"
     );
     const hex = multiAccounts.toCBOR().toString("hex");
     expect(hex).toBe(
-      "a4011ae9181cf30281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e6504782832383437356338643830663663303662616662653436613764313735306633666366323536356637"
+      "a5011ae9181cf30281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32"
     );
     const ur = multiAccounts.toUREncoder(1000).nextPart();
     expect(ur).toBe(
-      "ur:crypto-multi-accounts/oxadcywlcscewfaolytaaddloeaxhdclaowdverokopdinhseeroisyalksaykctjshedprnuyjyfgrovawewftyghceglrpkgamtaaddyoyadlocsdwykcfadykykaeykaeykaxisjeihkkjkjyjljtihaaksdeeyeteeemeciaetieetdyiyeniadyenidhsiyidiheeenhsemieehemecdyiyeoiyiaiyeyeceneciyemwydrlpjt"
+      "ur:crypto-multi-accounts/onadcywlcscewfaolytaaddloeaxhdclaowdverokopdinhseeroisyalksaykctjshedprnuyjyfgrovawewftyghceglrpkgamtaaddyoyadlocsdwykcfadykykaeykaeykaxisjeihkkjkjyjljtihaaksdeeyeteeemeciaetieetdyiyeniadyenidhsiyidiheeenhsemieehemecdyiyeoiyiaiyeyeceneciyemahihehdmdydmeyksrlzmdi"
     );
   });
 
   it("should decode CryptoMultiAccount", () => {
     const hex =
-      "a4011ae9181cf30281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e6504782832383437356338643830663663303662616662653436613764313735306633666366323536356637";
+      "a5011ae9181cf30281d9012fa203582102eae4b876a8696134b868f88cc2f51f715f2dbedb7446b8e6edf3d4541c4eb67b06d90130a10188182cf51901f5f500f500f503686b657973746f6e65047828323834373563386438306636633036626166626534366137643137353066336663663235363566370565312e302e32";
     const cryptoMultiAccounts = CryptoMultiAccounts.fromCBOR(
       Buffer.from(hex, "hex")
     );
@@ -53,6 +54,9 @@ describe("CryptoMultiAccount", () => {
     );
     expect(cryptoMultiAccounts.getDeviceId()).toBe(
       "28475c8d80f6c06bafbe46a7d1750f3fcf2565f7"
+    );
+    expect(cryptoMultiAccounts.getVersion()).toBe(
+      "1.0.2"
     );
   });
 });
