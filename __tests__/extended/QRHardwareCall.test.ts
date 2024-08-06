@@ -6,7 +6,6 @@ import {
 } from '../../src/extended/QRHardwareCall';
 import { KeyDerivation } from '../../src/extended/KeyDerivation';
 import {
-  ChainType,
   Curve,
   DerivationAlgorithm,
   KeyDerivationSchema,
@@ -58,7 +57,7 @@ describe('QRHardwareCall', () => {
       keyPath1,
       Curve.ed25519,
       DerivationAlgorithm.slip10,
-      ChainType.SOL,
+      'SOL',
     );
     const keyPath2 = new CryptoKeypath([
       new PathComponent({ index: 44, hardened: true }),
@@ -71,7 +70,7 @@ describe('QRHardwareCall', () => {
       keyPath2,
       Curve.ed25519,
       DerivationAlgorithm.slip10,
-      ChainType.SOL,
+      'SOL',
     );
 
     const keyPath3 = new CryptoKeypath([
@@ -83,7 +82,7 @@ describe('QRHardwareCall', () => {
       keyPath3,
       Curve.ed25519,
       DerivationAlgorithm.slip10,
-      ChainType.SOL,
+      'SOL',
     );
 
     const keyDerivation = new KeyDerivation([schema1, schema2, schema3]);
@@ -116,7 +115,7 @@ describe('QRHardwareCall', () => {
       keyPath1,
       Curve.secp256k1,
       DerivationAlgorithm.slip10,
-      ChainType.BTC,
+      'BTC',
     );
     const keyPath2 = new CryptoKeypath([
       new PathComponent({ index: 44, hardened: true }),
@@ -129,7 +128,7 @@ describe('QRHardwareCall', () => {
       keyPath2,
       Curve.ed25519,
       DerivationAlgorithm.slip10,
-      ChainType.SOL,
+      'SOL',
     );
 
     const keyPath3 = new CryptoKeypath([
@@ -141,7 +140,7 @@ describe('QRHardwareCall', () => {
       keyPath3,
       Curve.ed25519,
       DerivationAlgorithm.slip10,
-      ChainType.SOL,
+      'SOL',
     );
 
     const keyDerivation = new KeyDerivation([schema1, schema2, schema3]);
@@ -154,12 +153,12 @@ describe('QRHardwareCall', () => {
 
     const hex = qrHardwareCall.toCBOR().toString('hex');
     expect(hex).toBe(
-      'a4010002d90515a10183d90516a301d90130a10186182cf500f500f502000300d90516a401d90130a1018a182cf51901f5f500f500f500f4020103000463534f4cd90516a401d90130a10186182cf51901f5f501f5020103000463534f4c036a5858582057616c6c65740401',
+      'a4010002d90515a10183d90516a401d90130a10186182cf500f500f5020003000463425443d90516a401d90130a1018a182cf51901f5f500f500f500f4020103000463534f4cd90516a401d90130a10186182cf51901f5f501f5020103000463534f4c036a5858582057616c6c65740401',
     );
 
     const ur = qrHardwareCall.toUREncoder(1000).nextPart();
     expect(ur).toBe(
-      'ur:qr-hardware-call/oxadaeaotaahbzoyadlstaahcmotadtaaddyoyadlncsdwykaeykaeykaoaeaxaetaahcmoxadtaaddyoyadlecsdwykcfadykykaeykaeykaewkaoadaxaeaaiagugwgstaahcmoxadtaaddyoyadlncsdwykcfadykykadykaoadaxaeaaiagugwgsaximhdhdhdcxhghsjzjzihjyaaaduojkiede',
+      'ur:qr-hardware-call/oxadaeaotaahbzoyadlstaahcmoxadtaaddyoyadlncsdwykaeykaeykaoaeaxaeaaiafwghfxtaahcmoxadtaaddyoyadlecsdwykcfadykykaeykaeykaewkaoadaxaeaaiagugwgstaahcmoxadtaaddyoyadlncsdwykcfadykykadykaoadaxaeaaiagugwgsaximhdhdhdcxhghsjzjzihjyaaadcfvwihvl',
     );
   });
 
