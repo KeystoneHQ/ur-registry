@@ -8,16 +8,17 @@ enum Keys {
   keyPath = 1,
   curve,
   algo,
+  chainType,
 }
 
 export enum Curve {
   secp256k1,
-  ed25519
+  ed25519,
 }
 
 export enum DerivationAlgorithm {
   slip10,
-  bip32ed25519
+  bip32ed25519,
 }
 
 export class KeyDerivationSchema extends RegistryItem {
@@ -27,6 +28,7 @@ export class KeyDerivationSchema extends RegistryItem {
     private keypath: CryptoKeypath,
     private curve: Curve = Curve.secp256k1,
     private algo: DerivationAlgorithm = DerivationAlgorithm.slip10,
+    private chainType?: String,
   ) {
     super();
   }
@@ -34,6 +36,7 @@ export class KeyDerivationSchema extends RegistryItem {
   public getKeypath = (): CryptoKeypath => this.keypath;
   public getCurve = (): Curve => this.curve;
   public getAlgo = (): DerivationAlgorithm => this.algo;
+  public getChainType = (): String => this.chainType;
 
   public toDataItem = (): DataItem => {
     const map: DataItemMap = {};
@@ -42,6 +45,9 @@ export class KeyDerivationSchema extends RegistryItem {
     map[Keys.keyPath] = dataItem;
     map[Keys.curve] = this.curve;
     map[Keys.algo] = this.algo;
+    if (this.chainType) {
+      map[Keys.chainType] = this.chainType;
+    }
     return new DataItem(map);
   };
 
@@ -50,7 +56,8 @@ export class KeyDerivationSchema extends RegistryItem {
     const keypaths = CryptoKeypath.fromDataItem(map[Keys.keyPath]);
     const curve = map[Keys.curve];
     const algo = map[Keys.algo];
-    return new KeyDerivationSchema(keypaths, curve, algo);
+    const chainType = map[Keys.chainType];
+    return new KeyDerivationSchema(keypaths, curve, algo, chainType);
   };
 
   public static fromCBOR = (_cborPayload: Buffer): KeyDerivationSchema => {
