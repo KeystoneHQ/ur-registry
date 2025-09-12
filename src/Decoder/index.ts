@@ -8,6 +8,7 @@ import {
   CryptoKeypath,
   CryptoOutput,
   CryptoPSBT,
+  CryptoPSBTExtend,
 } from '..';
 import { RegistryTypes } from '../RegistryType';
 import { UnknownURTypeError } from '../errors';
@@ -30,6 +31,8 @@ export class URRegistryDecoder extends URDecoder {
         return CryptoOutput.fromCBOR(ur.cbor);
       case RegistryTypes.CRYPTO_PSBT.getType():
         return CryptoPSBT.fromCBOR(ur.cbor);
+      case RegistryTypes.CRYPTO_PSBT_EXTEND.getType():
+        return CryptoPSBTExtend.fromCBOR(ur.cbor);
       case RegistryTypes.CRYPTO_ACCOUNT.getType():
         return CryptoAccount.fromCBOR(ur.cbor);
       default:

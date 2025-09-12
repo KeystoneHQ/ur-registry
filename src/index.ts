@@ -11,6 +11,7 @@ import { CryptoECKey } from './CryptoECKey';
 import { Bytes } from './Bytes';
 import { CryptoOutput } from './CryptoOutput';
 import { CryptoPSBT } from './CryptoPSBT';
+import { CryptoPSBTExtend } from './CryptoPSBTExtend';
 import { CryptoAccount } from './CryptoAccount';
 import { URRegistryDecoder } from './Decoder';
 
@@ -49,6 +50,7 @@ const URlib = {
   CryptoECKey,
   CryptoOutput,
   CryptoPSBT,
+  CryptoPSBTExtend,
   MultiKey,
   ScriptExpressions,
   PathComponent,
@@ -86,6 +88,7 @@ export {
   CryptoECKey,
   CryptoOutput,
   CryptoPSBT,
+  CryptoPSBTExtend,
   MultiKey,
   ScriptExpressions,
   PathComponent,
@@ -98,6 +101,7 @@ export * from './Decoder';
 export * from './lib';
 export * from './CryptoAccount'
 export * from './CryptoPSBT'
+export * from './CryptoPSBTExtend'
 export * from './CryptoHDKey'
 export * from './extended/CryptoMultiAccounts'
 export * from './extended/QRHardwareCall'
