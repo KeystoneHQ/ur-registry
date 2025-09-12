@@ -16,7 +16,7 @@ export enum CoinIds {
 }
 
 export class CryptoPSBTExtend extends RegistryItem {
-  getRegistryType = () => RegistryTypes.CRYPTO_PSBT;
+  getRegistryType = () => RegistryTypes.CRYPTO_PSBT_EXTEND;
 
   constructor(private psbt: Buffer, private coinId: CoinIds) {
     super();
