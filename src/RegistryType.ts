@@ -22,4 +22,5 @@ export const RegistryTypes = {
   QR_HARDWARE_CALL: new RegistryType("qr-hardware-call", 1201),
   KEY_DERIVATION_CALL: new RegistryType("key-derivation-call", 1301),
   KEY_DERIVATION_SCHEMA: new RegistryType("key-derivation-schema", 1302),
+  DERIVE_CONTEXT_HASH_CALL: new RegistryType("derive-context-hash-call", 1303),
 };

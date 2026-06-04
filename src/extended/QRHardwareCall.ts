@@ -3,6 +3,7 @@ import { RegistryItem } from '../RegistryItem';
 import { decodeToDataItem, DataItem } from '../lib';
 import { DataItemMap } from '../types';
 import { KeyDerivation } from './KeyDerivation';
+import { DeriveContextHashCall } from './DeriveContextHashCall';
 
 enum Keys {
   type = 1,
@@ -13,6 +14,7 @@ enum Keys {
 
 export enum QRHardwareCallType {
   KeyDerivation,
+  DeriveContextHash,
 }
 
 export enum QRHardwareCallVersion {
@@ -20,7 +22,7 @@ export enum QRHardwareCallVersion {
   V1,
 }
 
-type QRHardwareCallParams = KeyDerivation;
+type QRHardwareCallParams = KeyDerivation | DeriveContextHashCall;
 
 export class QRHardwareCall extends RegistryItem {
   getRegistryType = () => RegistryTypes.QR_HARDWARE_CALL;
@@ -65,6 +67,10 @@ export class QRHardwareCall extends RegistryItem {
     switch (type) {
       case QRHardwareCallType.KeyDerivation:
         params = KeyDerivation.fromDataItem(map[Keys.params]);
+        break;
+      case QRHardwareCallType.DeriveContextHash:
+        params = DeriveContextHashCall.fromDataItem(map[Keys.params]);
+        break;
     }
     const origin = map[Keys.origin];
     const version = map[Keys.version];
