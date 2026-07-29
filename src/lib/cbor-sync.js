@@ -130,7 +130,12 @@
         return this.readUint16() * 65536 + this.readUint16();
       },
       readUint64: function () {
-        return this.readUint32() * 4294967296 + this.readUint32();
+        var high = this.readUint32();
+        var low = this.readUint32();
+        if (high > 0x1fffff) {
+          throw new RangeError('CBOR integer exceeds JavaScript safe range');
+        }
+        return high * 4294967296 + low;
       },
     };
     function Writer() {}
@@ -216,8 +221,14 @@
     }
 
     var stopCode = new Error(); // Just a unique object, that won't compare strictly equal to anything else
+    var MAX_NESTING_DEPTH = 64;
+    var MAX_CONTAINER_ITEMS = 100000;
 
-    function decodeReader(reader) {
+    function decodeReader(reader, depth) {
+      depth = depth || 0;
+      if (depth > MAX_NESTING_DEPTH) {
+        throw new Error('CBOR nesting depth exceeds limit');
+      }
       var header = readHeaderRaw(reader);
       switch (header.type) {
         case 0:
@@ -225,10 +236,26 @@
         case 1:
           return -1 - valueFromHeader(header, reader);
         case 2:
-          return reader.readChunk(valueFromHeader(header, reader));
+          var byteStringLength = valueFromHeader(header, reader);
+          if (byteStringLength === null) {
+            throw new Error('Indefinite-length byte strings are not supported');
+          }
+          return reader.readChunk(byteStringLength);
         case 3:
-          var buffer = reader.readChunk(valueFromHeader(header, reader));
-          return buffer.toString('utf-8');
+          var stringLength = valueFromHeader(header, reader);
+          if (stringLength === null) {
+            throw new Error('Indefinite-length text strings are not supported');
+          }
+          var buffer = reader.readChunk(stringLength);
+          var decodedString = buffer.toString('utf-8');
+          if (
+            typeof Buffer === 'function' &&
+            Buffer.isBuffer(buffer) &&
+            !Buffer.from(decodedString, 'utf-8').equals(buffer)
+          ) {
+            throw new Error('Invalid UTF-8 string in CBOR data');
+          }
+          return decodedString;
         case 4:
         case 5:
           var arrayLength = valueFromHeader(header, reader);
@@ -237,19 +264,54 @@
             if (header.type === 5) {
               arrayLength *= 2;
             }
+            if (
+              !Number.isSafeInteger(arrayLength) ||
+              arrayLength < 0 ||
+              arrayLength > MAX_CONTAINER_ITEMS
+            ) {
+              throw new Error('CBOR container size exceeds limit');
+            }
             for (var i = 0; i < arrayLength; i++) {
-              result[i] = decodeReader(reader);
+              result[i] = decodeReader(reader, depth + 1);
+              if (result[i] === stopCode) {
+                throw new Error('Unexpected CBOR break code');
+              }
             }
           } else {
             var item;
-            while ((item = decodeReader(reader)) !== stopCode) {
+            while ((item = decodeReader(reader, depth + 1)) !== stopCode) {
+              if (result.length >= MAX_CONTAINER_ITEMS) {
+                throw new Error('CBOR container size exceeds limit');
+              }
               result.push(item);
             }
           }
           if (header.type === 5) {
-            var objResult = {};
+            if (result.length % 2 !== 0) {
+              throw new Error('CBOR map has an incomplete key/value pair');
+            }
+            var objResult = Object.create(null);
             for (var i = 0; i < result.length; i += 2) {
-              objResult[result[i]] = result[i + 1];
+              var mapKey = result[i];
+              if (
+                typeof mapKey !== 'string' &&
+                typeof mapKey !== 'number'
+              ) {
+                throw new Error('CBOR map keys must be strings or numbers');
+              }
+              if (
+                mapKey === '__proto__' ||
+                mapKey === 'prototype' ||
+                mapKey === 'constructor'
+              ) {
+                throw new Error('Unsafe CBOR map key');
+              }
+              if (
+                Object.prototype.hasOwnProperty.call(objResult, String(mapKey))
+              ) {
+                throw new Error('Duplicate CBOR map key');
+              }
+              objResult[mapKey] = result[i + 1];
             }
             return objResult;
           } else {
@@ -258,7 +320,10 @@
         case 6:
           var tag = valueFromHeader(header, reader);
           var decoder = semanticDecoders[tag];
-          var result = decodeReader(reader);
+          var result = decodeReader(reader, depth + 1);
+          if (result === stopCode) {
+            throw new Error('Unexpected CBOR break code');
+          }
           return decoder ? decoder(result) : result;
         case 7:
           if (header.value === 25) {
@@ -286,6 +351,17 @@
           throw new Error('Unsupported header: ' + JSON.stringify(header));
       }
       throw new Error('not implemented yet');
+    }
+
+    function decodeComplete(reader) {
+      var result = decodeReader(reader, 0);
+      if (result === stopCode) {
+        throw new Error('Unexpected CBOR break code');
+      }
+      if (typeof reader.isAtEnd === 'function' && !reader.isAtEnd()) {
+        throw new Error('Trailing data after CBOR value');
+      }
+      return result;
     }
 
     function encodeWriter(data, writer) {
@@ -419,7 +495,7 @@
           var func = readerFunctions[i];
           var reader = func(data, format);
           if (reader) {
-            return decodeReader(reader);
+            return decodeComplete(reader);
           }
         }
         throw new Error('Unsupported input format: ' + format);
@@ -429,7 +505,7 @@
           var func = readerFunctions[i];
           var reader = func(data, format);
           if (reader) {
-            const result = decodeReader(reader);
+            const result = decodeComplete(reader);
             if (result instanceof DataItem) {
               return result;
             } else {
@@ -462,9 +538,15 @@
     }
     BufferReader.prototype = Object.create(Reader.prototype);
     BufferReader.prototype.peekByte = function () {
+      if (this.pos >= this.buffer.length) {
+        throw new RangeError('Unexpected end of CBOR data');
+      }
       return this.buffer[this.pos];
     };
     BufferReader.prototype.readByte = function () {
+      if (this.pos >= this.buffer.length) {
+        throw new RangeError('Unexpected end of CBOR data');
+      }
       return this.buffer[this.pos++];
     };
     BufferReader.prototype.readUint16 = function () {
@@ -488,9 +570,19 @@
       return result;
     };
     BufferReader.prototype.readChunk = function (length) {
+      if (
+        !Number.isSafeInteger(length) ||
+        length < 0 ||
+        length > this.buffer.length - this.pos
+      ) {
+        throw new RangeError('CBOR chunk exceeds remaining input');
+      }
       var result = Buffer.alloc(length);
       this.buffer.copy(result, 0, this.pos, (this.pos += length));
       return result;
+    };
+    BufferReader.prototype.isAtEnd = function () {
+      return this.pos === this.buffer.length;
     };
 
     function BufferWriter(stringFormat) {
@@ -602,19 +694,35 @@
     }
     HexReader.prototype = Object.create(Reader.prototype);
     HexReader.prototype.peekByte = function () {
-      var pair = this.hex.substring(this.pos, 2);
+      if (this.pos + 2 > this.hex.length) {
+        throw new RangeError('Unexpected end of CBOR data');
+      }
+      var pair = this.hex.substring(this.pos, this.pos + 2);
       return parseInt(pair, 16);
     };
     HexReader.prototype.readByte = function () {
+      if (this.pos + 2 > this.hex.length) {
+        throw new RangeError('Unexpected end of CBOR data');
+      }
       var pair = this.hex.substring(this.pos, this.pos + 2);
       this.pos += 2;
       return parseInt(pair, 16);
     };
     HexReader.prototype.readChunk = function (length) {
+      if (
+        !Number.isSafeInteger(length) ||
+        length < 0 ||
+        length * 2 > this.hex.length - this.pos
+      ) {
+        throw new RangeError('CBOR chunk exceeds remaining input');
+      }
       var hex = this.hex.substring(this.pos, this.pos + length * 2);
       this.pos += length * 2;
       if (typeof Buffer === 'function') return Buffer.from(hex, 'hex');
       return new BinaryHex(hex);
+    };
+    HexReader.prototype.isAtEnd = function () {
+      return this.pos === this.hex.length;
     };
 
     function HexWriter(finalFormat) {

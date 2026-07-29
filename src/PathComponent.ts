@@ -6,6 +6,21 @@ export class PathComponent {
   private hardened: boolean;
 
   constructor(args: { index?: number; hardened: boolean }) {
+    if (typeof args.hardened !== 'boolean') {
+      throw new TypeError(
+        '#[ur-registry][PathComponent][fn.constructor]: hardened must be a boolean',
+      );
+    }
+    if (
+      args.index !== undefined &&
+      (!Number.isInteger(args.index) ||
+        args.index < 0 ||
+        args.index >= PathComponent.HARDENED_BIT)
+    ) {
+      throw new RangeError(
+        `#[ur-registry][PathComponent][fn.constructor]: Invalid index ${args.index}`,
+      );
+    }
     this.index = args.index;
     this.hardened = args.hardened;
 
@@ -15,11 +30,6 @@ export class PathComponent {
       this.wildcard = true;
     }
 
-    if (this.index && (this.index & PathComponent.HARDENED_BIT) !== 0) {
-      throw new Error(
-        `#[ur-registry][PathComponent][fn.constructor]: Invalid index ${this.index} - most significant bit cannot be set`,
-      );
-    }
   }
 
   public getIndex = () => this.index;

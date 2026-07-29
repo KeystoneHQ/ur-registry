@@ -20,6 +20,16 @@ export class MultiKey extends RegistryItem {
     private keys: (CryptoECKey | CryptoHDKey)[],
   ) {
     super();
+    if (
+      !Number.isInteger(threshold) ||
+      threshold < 1 ||
+      !Array.isArray(keys) ||
+      threshold > keys.length
+    ) {
+      throw new RangeError(
+        '#[ur-registry][MultiKey][fn.constructor]: threshold must be between 1 and the number of keys',
+      );
+    }
   }
 
   getThreshold = () => this.threshold;
@@ -47,12 +57,21 @@ export class MultiKey extends RegistryItem {
     const map = dataItem.getData();
     const threshold = map[Keys.threshold];
     const _keys = map[Keys.keys] as DataItem[];
+    if (!Array.isArray(_keys)) {
+      throw new TypeError(
+        '#[ur-registry][MultiKey][fn.fromDataItem]: keys must be an array',
+      );
+    }
     const keys: (CryptoECKey | CryptoHDKey)[] = [];
     _keys.forEach((k) => {
       if (k.getTag() === RegistryTypes.CRYPTO_HDKEY.getTag()) {
         keys.push(CryptoHDKey.fromDataItem(k));
       } else if (k.getTag() === RegistryTypes.CRYPTO_ECKEY.getTag()) {
         keys.push(CryptoECKey.fromDataItem(k));
+      } else {
+        throw new Error(
+          `#[ur-registry][MultiKey][fn.fromDataItem]: unsupported key tag ${k.getTag()}`,
+        );
       }
     });
     return new MultiKey(threshold, keys);
