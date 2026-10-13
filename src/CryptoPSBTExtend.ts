@@ -11,7 +11,7 @@ enum Keys {
 export enum CoinIds {
   Litecoin = 2,
   Dogecoin = 3,
-  Dash = 4,
+  Dash = 5,
   BitcoinCash = 145,
 }
 
@@ -20,6 +20,9 @@ export class CryptoPSBTExtend extends RegistryItem {
 
   constructor(private psbt: Buffer, private coinId: CoinIds) {
     super();
+    if (![CoinIds.Litecoin, CoinIds.Dogecoin, CoinIds.Dash, CoinIds.BitcoinCash].includes(coinId)) {
+      throw new Error('invalid coin_id');
+    }
   }
 
   public getPSBT = () => this.psbt;
