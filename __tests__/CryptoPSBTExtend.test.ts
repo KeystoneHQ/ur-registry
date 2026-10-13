@@ -16,3 +16,20 @@ describe('CryptoPSBTExtend', () => {
     );
   });
 });
+
+
+describe('Dash PSBT Extend coin ID', () => {
+  it('encodes and decodes Dash as 5', () => {
+    expect(CoinIds.Dash).toBe(5);
+    const crypto = new CryptoPSBTExtend(Buffer.from('aabb', 'hex'), CoinIds.Dash);
+    expect(crypto.toCBOR().toString('hex')).toBe('a20142aabb0205');
+    const decoded = CryptoPSBTExtend.fromCBOR(Buffer.from('a20142aabb0205', 'hex'));
+    expect(decoded.getCoinId()).toBe(CoinIds.Dash);
+    expect(decoded.getPSBT().toString('hex')).toBe('aabb');
+  });
+
+  it('rejects the old Dash ID 4', () => {
+    expect(() => new CryptoPSBTExtend(Buffer.from('aabb', 'hex'), 4 as CoinIds)).toThrow('invalid coin_id');
+    expect(() => CryptoPSBTExtend.fromCBOR(Buffer.from('a20142aabb0204', 'hex'))).toThrow('invalid coin_id');
+  });
+});
